@@ -15,7 +15,8 @@ dependencies = [
     "alembic>=1.15,<2",
     # Auth
     "python-jose[cryptography]>=3.4,<4",
-    "passlib[bcrypt]>=1.7,<2",
+    "bcrypt>4,<5",
+    "passlib>=1.7,<2",
     "python-multipart>=0.0.20,<1",
     # LLM
     "openai>=1.76,<2",
