@@ -1,0 +1,39 @@
+# IDE
+.idea
+*.iml
+.vscode
+
+# Python
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Environment
+.env
+backend/.env
+
+# Docker
+docker-compose.override.yml
+
+# SSL certs
+nginx/conf.d/ssl.conf
+
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/plans
