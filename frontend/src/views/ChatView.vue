@@ -29,21 +29,14 @@ function handleLogout() {
     <header class="flex items-center justify-between px-6 py-3 bg-gray-800 border-b border-gray-700 shrink-0">
       <div class="flex items-center gap-3">
         <h1 class="text-lg font-semibold text-white">DSN Chatbot</h1>
-        <button
-          @click="handleNewChat"
-          class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
-        >
-          + New Chat
-        </button>
       </div>
 
       <div class="flex items-center gap-4">
-        <span class="text-sm text-gray-400">{{ authStore.user?.username }}</span>
         <button
-          @click="handleLogout"
-          class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white rounded-lg transition-colors"
+            @click="handleNewChat"
+            class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
         >
-          Sign Out
+          + New Chat
         </button>
       </div>
     </header>
