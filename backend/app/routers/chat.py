@@ -35,6 +35,7 @@ async def chat(
             user_message=request.message,
             conversation_id=request.conversation_id,
             model=request.model,
+            game_id=request.game_id,
         ),
         media_type="text/event-stream",
         headers={

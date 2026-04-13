@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import engine, Base
-from app.routers import auth, chat
+from app.routers import auth, chat, games
+
+import logging
 
 
 @asynccontextmanager
@@ -37,8 +39,11 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router)
 app.include_router(chat.router)
+app.include_router(games.router)
 
+LOG = logging.getLogger(__name__)
+LOG.info(f"{settings.app_name} - {settings.app_version} - {settings.app_env}")
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "app": settings.app_name}
+    return {"status": "ok", "app": settings.app_name, "version": settings.app_version}

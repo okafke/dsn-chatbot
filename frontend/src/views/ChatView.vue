@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import {useRouter} from 'vue-router'
-import {useAuthStore} from '../stores/auth'
 import {useChatStore} from '../stores/chat'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
 
-const router = useRouter()
-const authStore = useAuthStore()
 const chatStore = useChatStore()
 
 function handleSend(message: string) {
@@ -17,10 +13,6 @@ function handleNewChat() {
   chatStore.newConversation()
 }
 
-function handleLogout() {
-  authStore.logout()
-  router.push('/login')
-}
 </script>
 
 <template>

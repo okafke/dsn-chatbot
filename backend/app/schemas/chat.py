@@ -8,6 +8,7 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=32000)
     conversation_id: uuid.UUID | None = None
     model: str | None = None  # Override default model
+    game_id: str | None = None  # Identifies which game is being played
 
 
 class MessageResponse(BaseModel):
@@ -33,3 +34,9 @@ class ConversationResponse(BaseModel):
 
 class ConversationDetailResponse(ConversationResponse):
     messages: list[MessageResponse] = []
+
+
+class GameResponse(BaseModel):
+    id: str
+    name: str
+    description: str

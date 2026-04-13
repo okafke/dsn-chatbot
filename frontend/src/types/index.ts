@@ -32,8 +32,17 @@ export interface ConversationDetail extends Conversation {
 }
 
 export interface SSEEvent {
-    type: 'conversation' | 'token' | 'done' | 'error'
+    type: 'conversation' | 'token' | 'done' | 'error' | 'mood'
     id?: string
     content?: string
     message?: string
+    value?: string
 }
+
+export interface Game {
+    id: string
+    name: string
+    description: string
+}
+
+export type RobotMood = 'sad' | 'slightly_happy'

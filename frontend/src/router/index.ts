@@ -18,6 +18,18 @@ const router = createRouter({
         },
         {
             path: '/',
+            name: 'games',
+            component: () => import('../views/GameSelectionView.vue'),
+            meta: {requiresAuth: true},
+        },
+        {
+            path: '/game/:gameId',
+            name: 'game',
+            component: () => import('../views/GameChatView.vue'),
+            meta: {requiresAuth: true},
+        },
+        {
+            path: '/chat',
             name: 'chat',
             component: () => import('../views/ChatView.vue'),
             meta: {requiresAuth: true},
@@ -30,7 +42,7 @@ router.beforeEach((to, _from, next) => {
     if (to.meta.requiresAuth && !isAuthenticated()) {
         next({name: 'login'})
     } else if (to.meta.guest && isAuthenticated()) {
-        next({name: 'chat'})
+        next({name: 'games'})
     } else {
         next()
     }

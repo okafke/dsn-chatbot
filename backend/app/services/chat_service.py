@@ -1,4 +1,5 @@
 import json
+import re
 import uuid
 from typing import AsyncGenerator
 
@@ -6,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.games.registry import get_game
 from app.llm.base import LLMMessage
 from app.llm.factory import get_llm_provider
 from app.models.conversation import Conversation
@@ -13,6 +15,26 @@ from app.models.message import Message
 
 
 SYSTEM_PROMPT = "You are a helpful AI assistant. Be concise and clear in your responses."
+
+_MOOD_PATTERN = re.compile(r"\[MOOD:(\w+)\]\s*$")
+
+
+def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[str, str | None]:
+    """Strip a trailing [MOOD:value] tag from *text*.
+
+    Returns (cleaned_text, mood_value).  mood_value is ``None`` when no
+    valid tag is found.
+    """
+    match = _MOOD_PATTERN.search(text)
+    if not match:
+        return text, None
+
+    mood = match.group(1)
+    if available_moods and mood not in available_moods:
+        return text, None
+
+    cleaned = text[: match.start()].rstrip()
+    return cleaned, mood
 
 
 async def get_or_create_conversation(
@@ -41,7 +63,9 @@ async def get_or_create_conversation(
 
 
 async def get_conversation_messages(
-    db: AsyncSession, conversation_id: uuid.UUID
+    db: AsyncSession,
+    conversation_id: uuid.UUID,
+    system_prompt: str = SYSTEM_PROMPT,
 ) -> list[LLMMessage]:
     """Load conversation history as LLM messages."""
     result = await db.execute(
@@ -51,7 +75,7 @@ async def get_conversation_messages(
     )
     messages = result.scalars().all()
 
-    llm_messages = [LLMMessage(role="system", content=SYSTEM_PROMPT)]
+    llm_messages = [LLMMessage(role="system", content=system_prompt)]
     for msg in messages:
         llm_messages.append(LLMMessage(role=msg.role, content=msg.content))
 
@@ -99,6 +123,7 @@ async def stream_chat_response(
     user_message: str,
     conversation_id: uuid.UUID | None = None,
     model: str | None = None,
+    game_id: str | None = None,
 ) -> AsyncGenerator[str, None]:
     """
     Process a chat message and stream the response as SSE events.
@@ -106,10 +131,15 @@ async def stream_chat_response(
     Yields SSE-formatted strings:
     - data: {"type": "conversation", "id": "..."}\n\n  (first event)
     - data: {"type": "token", "content": "..."}\n\n    (token chunks)
+    - data: {"type": "mood", "value": "..."}\n\n       (game mood, if applicable)
     - data: {"type": "done"}\n\n                         (completion)
     - data: {"type": "error", "message": "..."}\n\n     (on error)
     """
     provider = get_llm_provider()
+
+    # Resolve game-specific settings
+    game = get_game(game_id) if game_id else None
+    system_prompt = game.system_prompt if game else SYSTEM_PROMPT
 
     try:
         # Get or create conversation
@@ -119,7 +149,7 @@ async def stream_chat_response(
         yield f"data: {json.dumps({'type': 'conversation', 'id': str(conversation.id)})}\n\n"
 
         # Load conversation history
-        llm_messages = await get_conversation_messages(db, conversation.id)
+        llm_messages = await get_conversation_messages(db, conversation.id, system_prompt)
 
         # Save user message
         await save_message(db, conversation.id, "user", user_message)
@@ -139,12 +169,22 @@ async def stream_chat_response(
             full_response += token
             yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
 
-        # Save assistant message
+        # Parse mood tag if this is a game conversation
+        cleaned_response = full_response
+        mood_value: str | None = None
+        if game:
+            cleaned_response, mood_value = _parse_mood(
+                full_response, game.available_moods
+            )
+            if mood_value:
+                yield f"data: {json.dumps({'type': 'mood', 'value': mood_value})}\n\n"
+
+        # Save assistant message (cleaned, without mood tag)
         await save_message(
             db,
             conversation.id,
             "assistant",
-            full_response,
+            cleaned_response,
             model=model or provider.get_default_model(),
         )
         await db.commit()

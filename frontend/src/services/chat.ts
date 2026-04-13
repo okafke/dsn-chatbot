@@ -7,9 +7,18 @@ import type {SSEEvent} from '../types'
 export async function sendMessageStream(
     message: string,
     conversationId: string | null,
-    onEvent: (event: SSEEvent) => void
+    onEvent: (event: SSEEvent) => void,
+    gameId?: string | null
 ): Promise<void> {
     const token = localStorage.getItem('access_token')
+
+    const body: Record<string, unknown> = {
+        message,
+        conversation_id: conversationId,
+    }
+    if (gameId) {
+        body.game_id = gameId
+    }
 
     const response = await fetch('/api/chat', {
         method: 'POST',
@@ -17,10 +26,7 @@ export async function sendMessageStream(
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            message,
-            conversation_id: conversationId,
-        }),
+        body: JSON.stringify(body),
     })
 
     if (!response.ok) {
