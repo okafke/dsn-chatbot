@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+<script lang="ts" setup>
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {useAuthStore} from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -28,37 +28,37 @@ async function handleLogin() {
         {{ authStore.error }}
       </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-5">
+      <form class="space-y-5" @submit.prevent="handleLogin">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="username">Username</label>
           <input
-            id="username"
-            v-model="username"
-            type="text"
-            required
-            autocomplete="username"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter your username"
+              id="username"
+              v-model="username"
+              autocomplete="username"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your username"
+              required
+              type="text"
           />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="password">Password</label>
           <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            autocomplete="current-password"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter your password"
+              id="password"
+              v-model="password"
+              autocomplete="current-password"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter your password"
+              required
+              type="password"
           />
         </div>
 
         <button
-          type="submit"
-          :disabled="authStore.loading"
-          class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            :disabled="authStore.loading"
+            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            type="submit"
         >
           {{ authStore.loading ? 'Signing in...' : 'Sign In' }}
         </button>
@@ -66,7 +66,7 @@ async function handleLogin() {
 
       <p class="mt-6 text-center text-gray-400 text-sm">
         Don't have an account?
-        <router-link to="/register" class="text-blue-400 hover:text-blue-300 font-medium">
+        <router-link class="text-blue-400 hover:text-blue-300 font-medium" to="/register">
           Create one
         </router-link>
       </p>

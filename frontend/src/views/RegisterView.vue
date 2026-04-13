@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+<script lang="ts" setup>
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {useAuthStore} from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -40,71 +40,71 @@ async function handleRegister() {
       <h1 class="text-3xl font-bold text-white text-center mb-8">Create Account</h1>
 
       <div
-        v-if="authStore.error || localError"
-        class="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-300 text-sm"
+          v-if="authStore.error || localError"
+          class="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-300 text-sm"
       >
         {{ localError || authStore.error }}
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-5">
+      <form class="space-y-5" @submit.prevent="handleRegister">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="email">Email</label>
           <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
-            autocomplete="email"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="you@example.com"
+              id="email"
+              v-model="email"
+              autocomplete="email"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="you@example.com"
+              required
+              type="email"
           />
         </div>
 
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="username">Username</label>
           <input
-            id="username"
-            v-model="username"
-            type="text"
-            required
-            autocomplete="username"
-            minlength="3"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Choose a username"
+              id="username"
+              v-model="username"
+              autocomplete="username"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              minlength="3"
+              placeholder="Choose a username"
+              required
+              type="text"
           />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="password">Password</label>
           <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            autocomplete="new-password"
-            minlength="8"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="At least 8 characters"
+              id="password"
+              v-model="password"
+              autocomplete="new-password"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              minlength="8"
+              placeholder="At least 8 characters"
+              required
+              type="password"
           />
         </div>
 
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
+          <label class="block text-sm font-medium text-gray-300 mb-1" for="confirmPassword">Confirm Password</label>
           <input
-            id="confirmPassword"
-            v-model="confirmPassword"
-            type="password"
-            required
-            autocomplete="new-password"
-            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Repeat your password"
+              id="confirmPassword"
+              v-model="confirmPassword"
+              autocomplete="new-password"
+              class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Repeat your password"
+              required
+              type="password"
           />
         </div>
 
         <button
-          type="submit"
-          :disabled="authStore.loading"
-          class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            :disabled="authStore.loading"
+            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            type="submit"
         >
           {{ authStore.loading ? 'Creating account...' : 'Create Account' }}
         </button>
@@ -112,7 +112,7 @@ async function handleRegister() {
 
       <p class="mt-6 text-center text-gray-400 text-sm">
         Already have an account?
-        <router-link to="/login" class="text-blue-400 hover:text-blue-300 font-medium">
+        <router-link class="text-blue-400 hover:text-blue-300 font-medium" to="/login">
           Sign in
         </router-link>
       </p>
