@@ -107,12 +107,18 @@ interface BlinkConfig {
     minIntervalMs: number
     /** Maximum time between blinks (ms). */
     maxIntervalMs: number
+    /** Probability (0–1) that a blink becomes a double-blink. */
+    doubleBlinkChance: number
+    /** Pause between the two blinks in a double-blink (ms). */
+    doubleBlinkGapMs: number
 }
 
 const defaultBlinkConfig: BlinkConfig = {
     closedDurationMs: 150,
     minIntervalMs: 2000,
     maxIntervalMs: 5500,
+    doubleBlinkChance: 0.15,
+    doubleBlinkGapMs: 80,
 }
 
 let blinkConfig: BlinkConfig = { ...defaultBlinkConfig }
@@ -153,17 +159,34 @@ export function createAnimationController() {
 
     // ── Blinking ────────────────────────────────────────────────────────
 
+    /** Perform a single close→open blink and invoke `onDone` when finished. */
+    function doBlink(onDone: () => void) {
+        if (!running) return
+        state.value = { ...state.value, eyes: 'closed' }
+        blinkCloseTimer = setTimeout(() => {
+            if (!running) return
+            state.value = { ...state.value, eyes: 'open' }
+            onDone()
+        }, blinkConfig.closedDurationMs)
+    }
+
     function scheduleBlink() {
         if (!running) return
         const delay = randomBetween(blinkConfig.minIntervalMs, blinkConfig.maxIntervalMs)
         blinkTimer = setTimeout(() => {
             if (!running) return
-            state.value = { ...state.value, eyes: 'closed' }
-            blinkCloseTimer = setTimeout(() => {
-                if (!running) return
-                state.value = { ...state.value, eyes: 'open' }
-                scheduleBlink()
-            }, blinkConfig.closedDurationMs)
+            const isDouble = Math.random() < blinkConfig.doubleBlinkChance
+            doBlink(() => {
+                if (isDouble) {
+                    // Brief pause then blink again
+                    blinkTimer = setTimeout(() => {
+                        if (!running) return
+                        doBlink(() => scheduleBlink())
+                    }, blinkConfig.doubleBlinkGapMs)
+                } else {
+                    scheduleBlink()
+                }
+            })
         }, delay)
     }
 
