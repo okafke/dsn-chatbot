@@ -1,14 +1,35 @@
-import {defineStore} from 'pinia'
-import {ref} from 'vue'
-import type {Game, RobotMood} from '../types'
-import {fetchGames} from '../services/games'
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import type { Game, RobotMood, RobotAction } from '../types'
+import { fetchGames } from '../services/games'
+import {
+    createAnimationController,
+    type AnimationController,
+} from '../services/robotAnimation'
 
 export const useGameStore = defineStore('game', () => {
     const games = ref<Game[]>([])
     const currentGame = ref<Game | null>(null)
-    const currentMood = ref<RobotMood>('sad')
     const loading = ref(false)
     const error = ref<string | null>(null)
+
+    // ── Animation controller (one per store lifetime) ───────────────────
+    let _animation: AnimationController | null = null
+
+    function getAnimation(): AnimationController {
+        if (!_animation) {
+            _animation = createAnimationController()
+        }
+        return _animation
+    }
+
+    /** Reactive animation state for templates. */
+    const animationState = computed(() => getAnimation().state.value)
+
+    /** Convenience: current mood from animation state. */
+    const currentMood = computed(() => animationState.value.mood)
+
+    // ── Game lifecycle ──────────────────────────────────────────────────
 
     async function loadGames() {
         loading.value = true
@@ -24,27 +45,60 @@ export const useGameStore = defineStore('game', () => {
 
     function selectGame(game: Game) {
         currentGame.value = game
-        currentMood.value = 'sad' // Reset mood when starting a new game
+        const anim = getAnimation()
+        anim.setMood('sad') // Reset mood when starting a new game
+        anim.start()
     }
 
     function setMood(mood: RobotMood) {
-        currentMood.value = mood
+        getAnimation().setMood(mood)
+    }
+
+    function setAction(action: RobotAction) {
+        getAnimation().setAction(action)
+    }
+
+    function startSpeaking() {
+        getAnimation().startSpeaking()
+    }
+
+    function stopSpeaking() {
+        getAnimation().stopSpeaking()
     }
 
     function resetGame() {
+        getAnimation().stop()
         currentGame.value = null
-        currentMood.value = 'sad'
+    }
+
+    /** Start animation loops (call on component mount). */
+    function startAnimation() {
+        getAnimation().start()
+    }
+
+    /** Stop animation loops (call on component unmount). */
+    function stopAnimation() {
+        getAnimation().stop()
     }
 
     return {
+        // State
         games,
         currentGame,
         currentMood,
+        animationState,
         loading,
         error,
+        // Game actions
         loadGames,
         selectGame,
-        setMood,
         resetGame,
+        // Animation actions
+        setMood,
+        setAction,
+        startSpeaking,
+        stopSpeaking,
+        startAnimation,
+        stopAnimation,
     }
 })
