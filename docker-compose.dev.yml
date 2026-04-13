@@ -1,0 +1,26 @@
+# Development override — run with:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db backend
+#
+# Then start the frontend locally:
+#   cd frontend && npm run dev
+#
+# This gives you Vite HMR on the frontend while the backend + DB run in Docker.
+
+services:
+  backend:
+    volumes:
+      - ./backend:/app          # live-reload backend code changes
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-chatbot}:${POSTGRES_PASSWORD:-chatbot}@db:5432/${POSTGRES_DB:-chatbot}
+      CORS_ORIGINS: "http://localhost:5173,http://localhost:3000,http://localhost"
+      APP_ENV: development
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    ports:
+      - "8000:8000"             # expose backend directly for Vite proxy
+
+  # Frontend and nginx are not needed in dev mode
+  frontend:
+    profiles: ["production"]    # won't start unless you explicitly use this profile
+
+  nginx:
+    profiles: ["production"]
