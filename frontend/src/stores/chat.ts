@@ -35,13 +35,13 @@ export const useChatStore = defineStore('chat', () => {
     }
 
     /**
-     * Strip the [MOOD:...] tag from the last assistant message content
+     * Strip the $[MOOD:...] tag from the last assistant message content
      * so it doesn't show in the UI.
      */
     function stripMoodTagFromLastMessage() {
         const lastMsg = messages.value[messages.value.length - 1]
         if (lastMsg && lastMsg.role === 'assistant') {
-            lastMsg.content = lastMsg.content.replace(/\[MOOD:\w+\]\s*$/, '').trimEnd()
+            lastMsg.content = lastMsg.content.replace(/\$\[MOOD:\w+\]\s*$/, '').trimEnd()
         }
     }
 

@@ -51,10 +51,12 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function setMood(mood: RobotMood) {
+        console.log(`Setting mood ${mood}`)
         getAnimation().setMood(mood)
     }
 
     function setAction(action: RobotAction) {
+        console.log(`Setting action ${action}`)
         getAnimation().setAction(action)
     }
 

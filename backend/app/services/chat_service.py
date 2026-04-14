@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import uuid
 from typing import AsyncGenerator
@@ -16,8 +17,8 @@ from app.models.message import Message
 
 SYSTEM_PROMPT = "You are a helpful AI assistant. Be concise and clear in your responses."
 
-_MOOD_PATTERN = re.compile(r"\[MOOD:(\w+)\]\s*$")
-
+_MOOD_PATTERN = re.compile(r"\$\[MOOD:(\w+)\]\s*$")
+LOG = logging.getLogger(__name__)
 
 def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[str, str | None]:
     """Strip a trailing [MOOD:value] tag from *text*.
@@ -25,15 +26,19 @@ def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[st
     Returns (cleaned_text, mood_value).  mood_value is ``None`` when no
     valid tag is found.
     """
+    LOG.info(f"Checking {text} for mood pattern")
     match = _MOOD_PATTERN.search(text)
     if not match:
+        LOG.error(f"Failed to find mood in {text}")
         return text, None
 
     mood = match.group(1)
     if available_moods and mood not in available_moods:
+        LOG.error(f"{mood} not in ${available_moods}")
         return text, None
 
     cleaned = text[: match.start()].rstrip()
+    LOG.info(f"Parsed mood {mood} from {text}")
     return cleaned, mood
 
 
@@ -162,10 +167,12 @@ async def stream_chat_response(
 
         # Add the new user message to the LLM context
         llm_messages.append(LLMMessage(role="user", content=user_message))
+        LOG.info(llm_messages)
 
         # Stream the response
         full_response = ""
         async for token in provider.chat_completion_stream(llm_messages, model=model):
+            # TODO: Should probably wait for $ character and not send those tokens
             full_response += token
             yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
 
