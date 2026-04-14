@@ -87,17 +87,21 @@ function goToChat() {
             @click="selectGame(game)"
         >
           <div class="flex justify-center mb-4">
-            <img
-                v-if="gameImages[game.id]"
-                :alt="game.name"
-                :src="gameImages[game.id]"
-                class="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-200"
-            />
-            <div
-                v-else
-                class="w-24 h-24 bg-gray-700 rounded-xl flex items-center justify-center text-3xl"
-            >
-              🎮
+            <div class="p-2 rounded-2xl bg-gray-700/40 border border-gray-600/40 shadow-md">
+              <div class="rounded-xl overflow-hidden bg-gray-600/30 leading-[0]">
+                <img
+                    v-if="gameImages[game.id]"
+                    :alt="game.name"
+                    :src="gameImages[game.id]"
+                    class="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-200"
+                />
+                <div
+                    v-else
+                    class="w-24 h-24 flex items-center justify-center text-3xl"
+                >
+                  🎮
+                </div>
+              </div>
             </div>
           </div>
           <h3 class="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
