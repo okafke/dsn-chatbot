@@ -4,19 +4,18 @@ import {useRouter} from 'vue-router'
 import {useGameStore} from '../stores/game'
 import {useAuthStore} from '../stores/auth'
 import {useChatStore} from '../stores/chat'
-
-import sadRobot from '../assets/sad_robot.png'
-import slightlyHappyRobot from '../assets/slightly_happy_robot.png'
+import AnimatedRobotPreview from '../components/AnimatedRobotPreview.vue'
+import type {RobotMood} from '../types'
 
 const router = useRouter()
 const gameStore = useGameStore()
 const authStore = useAuthStore()
 const chatStore = useChatStore()
 
-// Map game IDs to preview images
-const gameImages: Record<string, string> = {
-  sad_robot: sadRobot,
-  lazy_robot: slightlyHappyRobot,
+// Map game IDs to the main mood used for the animated robot preview
+const gameMoods: Record<string, RobotMood> = {
+  sad_robot: 'sad',
+  lazy_robot: 'slightly_happy',
 }
 
 onMounted(async () => {
@@ -88,12 +87,11 @@ function goToChat() {
         >
           <div class="flex justify-center mb-4">
             <div class="p-2 rounded-2xl bg-gray-700/40 border border-gray-600/40 shadow-md">
-              <div class="rounded-xl overflow-hidden bg-gray-600/30 leading-[0]">
-                <img
-                    v-if="gameImages[game.id]"
-                    :alt="game.name"
-                    :src="gameImages[game.id]"
-                    class="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-200"
+              <div class="rounded-xl overflow-hidden bg-gray-600/30 leading-[0] group-hover:scale-110 transition-transform duration-200">
+                <AnimatedRobotPreview
+                    v-if="gameMoods[game.id]"
+                    :mood="gameMoods[game.id]"
+                    size="w-24 h-24"
                 />
                 <div
                     v-else
