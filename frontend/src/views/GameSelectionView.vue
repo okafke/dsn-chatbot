@@ -15,7 +15,7 @@ const chatStore = useChatStore()
 
 // Map game IDs to preview images
 const gameImages: Record<string, string> = {
-  depressed_robot: sadRobot,
+  sad_robot: sadRobot,
   lazy_robot: slightlyHappyRobot,
 }
 

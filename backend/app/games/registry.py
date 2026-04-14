@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from app.games.depressed_robot import (
+from app.games.sad_robot import (
     GAME_ID as DR_ID,
     GAME_NAME as DR_NAME,
     GAME_DESCRIPTION as DR_DESC,
