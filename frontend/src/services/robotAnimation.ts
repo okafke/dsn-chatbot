@@ -240,7 +240,12 @@ export function createAnimationController() {
         idleBehaviourEndTimer = null
     }
 
-    /** Change the robot's mood. Resets action to idle and restarts idle behaviours. */
+    /**
+     * Change the robot's mood.
+     * Preserves the current action (e.g. speaking) so a mood change mid-stream
+     * doesn't interrupt the speaking animation. Restarts idle behaviours for
+     * the new mood.
+     */
     function setMood(mood: RobotMood) {
         const wasRunning = running
         // Clear idle behaviour timers (mood-specific)
@@ -249,7 +254,8 @@ export function createAnimationController() {
         idleBehaviourTimer = null
         idleBehaviourEndTimer = null
 
-        state.value = { ...state.value, mood, action: 'idle' }
+        // Preserve the current action — don't reset to idle
+        state.value = { ...state.value, mood }
 
         if (wasRunning) {
             scheduleIdleBehaviour()

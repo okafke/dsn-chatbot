@@ -61,10 +61,12 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function startSpeaking() {
+        console.log(`Starting to speak`)
         getAnimation().startSpeaking()
     }
 
     function stopSpeaking() {
+        console.log(`Stopping speak`)
         getAnimation().stopSpeaking()
     }
 

@@ -51,11 +51,12 @@ onUnmounted(() => {
     chatStore.setGameId(null)
 })
 
-// Drive the speaking action based on streaming state
+// Drive the speaking action based on streaming OR typewriting state
+// The robot should keep "speaking" as long as text is still being revealed
 watch(
-    () => chatStore.isStreaming,
-    (streaming) => {
-        if (streaming) {
+    () => chatStore.isStreaming || chatStore.isTypewriting,
+    (active) => {
+        if (active) {
             gameStore.startSpeaking()
         } else {
             gameStore.stopSpeaking()

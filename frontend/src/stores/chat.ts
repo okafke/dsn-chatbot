@@ -8,11 +8,16 @@ export const useChatStore = defineStore('chat', () => {
     const messages = ref<ChatMessage[]>([])
     const conversationId = ref<string | null>(null)
     const isStreaming = ref(false)
+    const isTypewriting = ref(false)
     const error = ref<string | null>(null)
     const gameId = ref<string | null>(null)
 
     function setGameId(id: string | null) {
         gameId.value = id
+    }
+
+    function setTypewriting(value: boolean) {
+        isTypewriting.value = value
     }
 
     function addMessage(message: ChatMessage) {
@@ -108,9 +113,11 @@ export const useChatStore = defineStore('chat', () => {
         messages,
         conversationId,
         isStreaming,
+        isTypewriting,
         error,
         gameId,
         setGameId,
+        setTypewriting,
         addMessage,
         sendMessage,
         newConversation,
