@@ -22,15 +22,15 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
     <div class="flex items-center justify-center">
         <div class="p-3 rounded-2xl bg-gray-800/60 border border-gray-700/50 shadow-lg">
             <div class="relative block rounded-xl overflow-hidden bg-gray-700/40 leading-[0]">
-                <img
-                    v-if="currentImage"
-                    :alt="altText"
-                    :src="currentImage"
-                    class="w-48 h-48 object-contain transition-opacity duration-75"
-                />
-                <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
-                    🤖
-                </div>
+            <img
+                v-if="currentImage"
+                :alt="altText"
+                :src="currentImage"
+                class="robot-img w-48 h-48 object-contain transition-opacity duration-75"
+            />
+            <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
+                🤖
+            </div>
 
                 <!-- Speech bubble with animated dots -->
                 <Transition name="bubble">
@@ -46,6 +46,30 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
 </template>
 
 <style scoped>
+/* Breathing / bobbing animation */
+.robot-img {
+    transform: scale(1.05);
+    animation: robotBreathe 6s ease-in-out infinite;
+}
+
+@keyframes robotBreathe {
+    0% {
+        transform: scale(1.05) translateX(0.5px) translateY(1px);
+    }
+    25% {
+        transform: scale(1.05) translateX(-0.5px) translateY(0px);
+    }
+    50% {
+        transform: scale(1.05) translateX(0.5px) translateY(-1px);
+    }
+    75% {
+        transform: scale(1.05) translateX(-0.5px) translateY(0px);
+    }
+    100% {
+        transform: scale(1.05) translateX(0.5px) translateY(1px);
+    }
+}
+
 .speech-bubble {
     position: absolute;
     top: 0.25rem;
