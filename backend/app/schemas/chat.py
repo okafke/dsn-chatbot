@@ -40,3 +40,5 @@ class GameResponse(BaseModel):
     id: str
     name: str
     description: str
+    initial_mood: str
+    initial_message: str | None = None

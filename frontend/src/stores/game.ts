@@ -46,7 +46,7 @@ export const useGameStore = defineStore('game', () => {
     function selectGame(game: Game) {
         currentGame.value = game
         const anim = getAnimation()
-        anim.setMood('sad') // Reset mood when starting a new game
+        anim.setMood(game.initial_mood as RobotMood)
         anim.start()
     }
 

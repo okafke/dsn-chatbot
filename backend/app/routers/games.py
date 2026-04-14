@@ -11,6 +11,12 @@ async def get_games():
     """List all available games."""
     games = list_games()
     return [
-        GameResponse(id=g.id, name=g.name, description=g.description)
+        GameResponse(
+            id=g.id,
+            name=g.name,
+            description=g.description,
+            initial_mood=g.initial_mood,
+            initial_message=g.initial_message,
+        )
         for g in games
     ]

@@ -10,6 +10,15 @@ from app.games.depressed_robot import (
     INITIAL_MOOD as DR_MOOD,
     AVAILABLE_MOODS as DR_MOODS,
 )
+from app.games.lazy_robot import (
+    GAME_ID as LR_ID,
+    GAME_NAME as LR_NAME,
+    GAME_DESCRIPTION as LR_DESC,
+    SYSTEM_PROMPT as LR_PROMPT,
+    INITIAL_MOOD as LR_MOOD,
+    AVAILABLE_MOODS as LR_MOODS,
+    INITIAL_MESSAGE as LR_INITIAL_MSG,
+)
 
 
 @dataclass
@@ -20,6 +29,7 @@ class GameDefinition:
     system_prompt: str
     initial_mood: str
     available_moods: list[str] = field(default_factory=list)
+    initial_message: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -34,6 +44,15 @@ _GAMES: dict[str, GameDefinition] = {
         system_prompt=DR_PROMPT,
         initial_mood=DR_MOOD,
         available_moods=DR_MOODS,
+    ),
+    LR_ID: GameDefinition(
+        id=LR_ID,
+        name=LR_NAME,
+        description=LR_DESC,
+        system_prompt=LR_PROMPT,
+        initial_mood=LR_MOOD,
+        available_moods=LR_MOODS,
+        initial_message=LR_INITIAL_MSG,
     ),
 }
 

@@ -43,6 +43,8 @@ export interface Game {
     id: string
     name: string
     description: string
+    initial_mood: string
+    initial_message?: string | null
 }
 
 // ── Robot Animation Types ───────────────────────────────────────────────────

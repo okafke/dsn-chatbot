@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import { useChatStore } from '../stores/chat'
+import type { RobotMood } from '../types'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
 import RobotDisplay from '../components/RobotDisplay.vue'
@@ -34,6 +35,14 @@ onMounted(async () => {
     if (!chatStore.conversationId) {
         chatStore.newConversation()
     }
+
+    // Show the game's initial message as an assistant message (if any)
+    if (game.initial_message && chatStore.messages.length === 0) {
+        chatStore.addMessage({
+            role: 'assistant',
+            content: game.initial_message,
+        })
+    }
 })
 
 onUnmounted(() => {
@@ -64,8 +73,18 @@ function handleBack() {
 }
 
 function handleNewGame() {
-    gameStore.setMood('sad')
+    const game = gameStore.currentGame
+    if (game) {
+        gameStore.setMood(game.initial_mood as RobotMood)
+    }
     chatStore.newConversation()
+    // Re-show the initial message if the game has one
+    if (game?.initial_message) {
+        chatStore.addMessage({
+            role: 'assistant',
+            content: game.initial_message,
+        })
+    }
 }
 </script>
 

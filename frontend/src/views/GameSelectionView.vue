@@ -6,6 +6,7 @@ import {useAuthStore} from '../stores/auth'
 import {useChatStore} from '../stores/chat'
 
 import sadRobot from '../assets/sad_robot.png'
+import slightlyHappyRobot from '../assets/slightly_happy_robot.png'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -15,6 +16,7 @@ const chatStore = useChatStore()
 // Map game IDs to preview images
 const gameImages: Record<string, string> = {
   depressed_robot: sadRobot,
+  lazy_robot: slightlyHappyRobot,
 }
 
 onMounted(async () => {

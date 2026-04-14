@@ -111,6 +111,7 @@ export const useChatStore = defineStore('chat', () => {
         error,
         gameId,
         setGameId,
+        addMessage,
         sendMessage,
         newConversation,
     }

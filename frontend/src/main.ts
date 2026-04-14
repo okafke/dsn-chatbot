@@ -13,3 +13,9 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+
+// Health check on startup
+fetch('/api/health')
+    .then((res) => res.json())
+    .then((data) => console.log('[health]', data))
+    .catch((err) => console.warn('[health] Backend unreachable:', err.message))

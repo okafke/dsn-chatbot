@@ -9,9 +9,13 @@ from app.routers import auth, chat, games
 
 import logging
 
+logging.basicConfig(level=logging.INFO)
+LOG = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    LOG.info(f"{settings.app_name} - {settings.app_version} - {settings.app_env}")
     # Create tables on startup (use Alembic in production)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -40,9 +44,6 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(chat.router)
 app.include_router(games.router)
-
-LOG = logging.getLogger(__name__)
-LOG.info(f"{settings.app_name} - {settings.app_version} - {settings.app_env}")
 
 @app.get("/api/health")
 async def health_check():

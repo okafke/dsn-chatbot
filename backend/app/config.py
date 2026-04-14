@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     # Application
     app_name: str = "DSN Chatbot"
     app_env: str = "development"
-    app_version: str = "0.1.0"
+    app_version: str = "0.2.0"
     debug: bool = False
 
     # Database
