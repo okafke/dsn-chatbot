@@ -20,25 +20,27 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
 
 <template>
     <div class="flex items-center justify-center">
-        <div class="relative inline-block">
-            <img
-                v-if="currentImage"
-                :alt="altText"
-                :src="currentImage"
-                class="w-48 h-48 object-contain transition-opacity duration-75"
-            />
-            <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
-                🤖
-            </div>
-
-            <!-- Speech bubble with animated dots -->
-            <Transition name="bubble">
-                <div v-if="isSpeaking" class="speech-bubble">
-                    <span class="dot dot-1">.</span>
-                    <span class="dot dot-2">.</span>
-                    <span class="dot dot-3">.</span>
+        <div class="p-3 rounded-2xl bg-gray-800/60 border border-gray-700/50 shadow-lg">
+            <div class="relative block rounded-xl overflow-hidden bg-gray-700/40 leading-[0]">
+                <img
+                    v-if="currentImage"
+                    :alt="altText"
+                    :src="currentImage"
+                    class="w-48 h-48 object-contain transition-opacity duration-75"
+                />
+                <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
+                    🤖
                 </div>
-            </Transition>
+
+                <!-- Speech bubble with animated dots -->
+                <Transition name="bubble">
+                    <div v-if="isSpeaking" class="speech-bubble">
+                        <span class="dot dot-1">.</span>
+                        <span class="dot dot-2">.</span>
+                        <span class="dot dot-3">.</span>
+                    </div>
+                </Transition>
+            </div>
         </div>
     </div>
 </template>
