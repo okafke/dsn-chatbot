@@ -18,6 +18,7 @@
  */
 
 import {
+    registerIdleBehaviour,
     registerSprite,
 } from './robotAnimation'
 
@@ -80,3 +81,15 @@ registerSprite('neutral', 'idle', 'closed', neutralEyesClosed)
 //     minIntervalMs: 4000,
 //     maxIntervalMs: 8000,
 // })
+
+import sadHeadTilt from '../assets/sad_robot_head_tilted.png'
+import sadHeadTiltEyesClosed from '../assets/sad_robot_head_tilted_eyes_closed.png'
+
+registerSprite('sad', 'head_tilt', 'open', sadHeadTilt)
+registerSprite('sad', 'head_tilt', 'closed', sadHeadTiltEyesClosed)
+registerIdleBehaviour('sad', {
+     action: 'head_tilt',
+     durationMs: 4000,
+     minIntervalMs: 5000,
+     maxIntervalMs: 10000,
+})
