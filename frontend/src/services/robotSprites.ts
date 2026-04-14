@@ -19,7 +19,6 @@
 
 import {
     registerSprite,
-    registerIdleBehaviour,
 } from './robotAnimation'
 
 // ── Sad mood sprites ────────────────────────────────────────────────────────
@@ -46,9 +45,17 @@ registerSprite('sad', 'idle', 'closed', sadIdleClosed)
 
 import slightlyHappyIdleOpen from '../assets/slightly_happy_robot.png'
 import slightlyHappyIdleClosed from '../assets/slightly_happy_robot_eyes_closed.png'
+import veryHappy from '../assets/very_happy_robot.png'
+import veryHappyEyesClosed from '../assets/very_happy_robot_eyes_closed.png'
+import neutral from '../assets/neutral_robot.png'
+import neutralEyesClosed from '../assets/neutral_robot_eyes_closed.png'
 
 registerSprite('slightly_happy', 'idle', 'open', slightlyHappyIdleOpen)
 registerSprite('slightly_happy', 'idle', 'closed', slightlyHappyIdleClosed)
+registerSprite('very_happy', 'idle', 'open', veryHappy)
+registerSprite('very_happy', 'idle', 'closed', veryHappyEyesClosed)
+registerSprite('neutral', 'idle', 'open', neutral)
+registerSprite('neutral', 'idle', 'closed', neutralEyesClosed)
 
 // If you add slightly_happy_robot_speaking.png / …_eyes_closed.png:
 // import shSpeakingOpen from '../assets/slightly_happy_robot_speaking.png'
