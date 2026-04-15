@@ -63,8 +63,9 @@ export interface SolvedConversation {
     id: string
     title: string
     username: string
-    solved_at: string
+    solved_at: string | null
     created_at: string
+    final_mood: string | null
     messages: Array<{
         id: string
         role: string

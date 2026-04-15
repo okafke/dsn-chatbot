@@ -22,6 +22,8 @@ const { t } = useI18n()
 const vaultUnlocked = ref(false)
 const showTips = ref(false)
 const isPasswordLockGame = computed(() => gameStore.currentGame?.id === 'password_lock')
+const isSadRobotGame = computed(() => gameStore.currentGame?.id === 'sad_robot')
+const hasHallOfFame = computed(() => isPasswordLockGame.value || isSadRobotGame.value)
 
 function handleVaultUnlocked() {
     vaultUnlocked.value = true
@@ -134,7 +136,7 @@ function handleNewGame() {
                     {{ t('passwordLock.tipsButton') }}
                 </button>
                 <button
-                    v-if="isPasswordLockGame"
+                    v-if="hasHallOfFame"
                     class="px-3 py-1.5 text-sm bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg transition-colors"
                     @click="router.push({ name: 'hallOfFame', params: { gameId: gameStore.currentGame!.id } })"
                 >

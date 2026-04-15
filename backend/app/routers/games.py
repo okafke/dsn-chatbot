@@ -76,8 +76,9 @@ class SolvedConversationResponse(BaseModel):
     id: uuid.UUID
     title: str
     username: str
-    solved_at: datetime
+    solved_at: datetime | None = None
     created_at: datetime
+    final_mood: str | None = None
     messages: list[MessageResponse] = []
 
     model_config = {"from_attributes": True}
@@ -88,17 +89,46 @@ async def get_hall_of_fame(
     game_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """List all solved conversations for a game (Hall of Fame), visible to everyone."""
-    result = await db.execute(
-        select(Conversation)
-        .where(
-            Conversation.game_id == game_id,
-            Conversation.solved_at.isnot(None),
+    """List all solved conversations for a game (Hall of Fame), visible to everyone.
+
+    For password-lock games: returns solved conversations ordered by solved_at.
+    For mood-based games (e.g. sad_robot): returns top 20 conversations with a
+    final_mood, ordered by best mood first.
+    """
+    game = get_game(game_id)
+
+    # Mood-based games: rank by final_mood (best mood first), limit 20
+    if game and game.available_moods and not game.password:
+        mood_order = {mood: idx for idx, mood in enumerate(game.available_moods)}
+
+        result = await db.execute(
+            select(Conversation)
+            .where(
+                Conversation.game_id == game_id,
+                Conversation.final_mood.isnot(None),
+            )
+            .options(selectinload(Conversation.messages), selectinload(Conversation.user))
         )
-        .options(selectinload(Conversation.messages), selectinload(Conversation.user))
-        .order_by(Conversation.solved_at.asc())
-    )
-    conversations = result.scalars().all()
+        conversations = result.scalars().all()
+
+        # Sort by mood rank descending (best mood = highest index in available_moods)
+        conversations = sorted(
+            conversations,
+            key=lambda c: mood_order.get(c.final_mood, -1),
+            reverse=True,
+        )[:20]
+    else:
+        # Password-lock style: solved conversations ordered by solved_at
+        result = await db.execute(
+            select(Conversation)
+            .where(
+                Conversation.game_id == game_id,
+                Conversation.solved_at.isnot(None),
+            )
+            .options(selectinload(Conversation.messages), selectinload(Conversation.user))
+            .order_by(Conversation.solved_at.asc())
+        )
+        conversations = result.scalars().all()
 
     return [
         SolvedConversationResponse(
@@ -107,6 +137,7 @@ async def get_hall_of_fame(
             username=c.user.username,
             solved_at=c.solved_at,
             created_at=c.created_at,
+            final_mood=c.final_mood,
             messages=[
                 MessageResponse(
                     id=m.id,

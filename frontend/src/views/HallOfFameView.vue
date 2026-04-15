@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '../i18n'
 import { fetchHallOfFame, type SolvedConversation } from '../services/games'
+
+// Robot mood images for the sad_robot game
+import sadRobotImg from '../assets/sad_robot.png'
+import neutralRobotImg from '../assets/neutral_robot.png'
+import slightlyHappyRobotImg from '../assets/slightly_happy_robot.png'
+import veryHappyRobotImg from '../assets/very_happy_robot.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +19,32 @@ const conversations = ref<SolvedConversation[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const expandedId = ref<string | null>(null)
+
+const isMoodGame = computed(() => gameId === 'sad_robot')
+
+const moodImages: Record<string, string> = {
+    sad: sadRobotImg,
+    neutral: neutralRobotImg,
+    slightly_happy: slightlyHappyRobotImg,
+    very_happy: veryHappyRobotImg,
+}
+
+const moodLabels: Record<string, string> = {
+    sad: '😢',
+    neutral: '😐',
+    slightly_happy: '🙂',
+    very_happy: '😄',
+}
+
+function getMoodImage(mood: string | null): string | null {
+    if (!mood) return null
+    return moodImages[mood] ?? null
+}
+
+function getMoodEmoji(mood: string | null): string {
+    if (!mood) return '❓'
+    return moodLabels[mood] ?? '❓'
+}
 
 onMounted(async () => {
     try {
@@ -32,7 +64,8 @@ function handleBack() {
     router.push({ name: 'game', params: { gameId } })
 }
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string | null): string {
+    if (!dateStr) return '—'
     return new Date(dateStr).toLocaleString()
 }
 </script>
@@ -68,12 +101,12 @@ function formatDate(dateStr: string): string {
 
             <!-- Empty state -->
             <div v-else-if="conversations.length === 0" class="text-center py-12">
-                <div class="text-5xl mb-4">🔒</div>
-                <p class="text-gray-400 text-lg">{{ t('hallOfFame.empty') }}</p>
-                <p class="text-gray-500 text-sm mt-2">{{ t('hallOfFame.beFirst') }}</p>
+                <div class="text-5xl mb-4">{{ isMoodGame ? '🤖' : '🔒' }}</div>
+                <p class="text-gray-400 text-lg">{{ t(isMoodGame ? 'hallOfFame.emptyMood' : 'hallOfFame.empty') }}</p>
+                <p class="text-gray-500 text-sm mt-2">{{ t(isMoodGame ? 'hallOfFame.beFirstMood' : 'hallOfFame.beFirst') }}</p>
             </div>
 
-            <!-- Solved conversations list -->
+            <!-- Conversations list -->
             <div v-else class="space-y-4">
                 <div
                     v-for="(conv, index) in conversations"
@@ -89,12 +122,29 @@ function formatDate(dateStr: string): string {
                             <span class="text-2xl">
                                 {{ index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅' }}
                             </span>
+
+                            <!-- Robot mood image for mood-based games -->
+                            <img
+                                v-if="isMoodGame && getMoodImage(conv.final_mood)"
+                                :src="getMoodImage(conv.final_mood)!"
+                                :alt="conv.final_mood ?? 'unknown'"
+                                class="w-10 h-10 object-contain rounded"
+                            />
+
                             <div>
                                 <div class="text-white font-medium">
                                     {{ conv.username }}
+                                    <span v-if="isMoodGame" class="ml-2 text-sm text-gray-400">
+                                        {{ getMoodEmoji(conv.final_mood) }} {{ conv.final_mood ?? 'unknown' }}
+                                    </span>
                                 </div>
                                 <div class="text-gray-400 text-xs">
-                                    {{ t('hallOfFame.solvedAt') }} {{ formatDate(conv.solved_at) }}
+                                    <template v-if="isMoodGame">
+                                        {{ t('hallOfFame.endMood') }}: {{ conv.final_mood ?? '—' }}
+                                    </template>
+                                    <template v-else>
+                                        {{ t('hallOfFame.solvedAt') }} {{ formatDate(conv.solved_at) }}
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -132,6 +182,22 @@ function formatDate(dateStr: string): string {
                                     >
                                         {{ msg.content }}
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Final mood image at the bottom of expanded conversation -->
+                            <div
+                                v-if="isMoodGame && getMoodImage(conv.final_mood)"
+                                class="border-t border-gray-700 px-4 py-3 flex items-center justify-center gap-3 bg-gray-800/50"
+                            >
+                                <img
+                                    :src="getMoodImage(conv.final_mood)!"
+                                    :alt="conv.final_mood ?? 'unknown'"
+                                    class="w-16 h-16 object-contain"
+                                />
+                                <div class="text-gray-300 text-sm">
+                                    {{ t('hallOfFame.finalMoodLabel') }}: <strong>{{ conv.final_mood }}</strong>
+                                    {{ getMoodEmoji(conv.final_mood) }}
                                 </div>
                             </div>
                         </div>

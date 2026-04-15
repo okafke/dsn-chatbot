@@ -191,6 +191,9 @@ async def stream_chat_response(
             )
             if mood_value:
                 yield f"data: {json.dumps({'type': 'mood', 'value': mood_value})}\n\n"
+                # Persist the latest mood on the conversation
+                conversation.final_mood = mood_value
+                await db.flush()
 
         # Save assistant message (cleaned, without mood tag)
         await save_message(

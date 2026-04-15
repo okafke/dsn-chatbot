@@ -84,7 +84,11 @@ export default {
         button: 'Ruhmeshalle',
         empty: 'Noch hat niemand den Tresor geknackt!',
         beFirst: 'Sei der Erste, der das Passwort extrahiert und den Tresor öffnet.',
+        emptyMood: 'Noch keine Gespräche!',
+        beFirstMood: 'Sei der Erste, der den Roboter aufmuntert und es in die Bestenliste schafft.',
         solvedAt: 'Gelöst:',
+        endMood: 'Endstimmung',
+        finalMoodLabel: 'Endstimmung',
         messages: 'Nachrichten',
     },
 } as const

@@ -84,7 +84,11 @@ export default {
         button: 'Hall of Fame',
         empty: 'No one has cracked the vault yet!',
         beFirst: 'Be the first to extract the password and unlock the vault.',
+        emptyMood: 'No conversations yet!',
+        beFirstMood: 'Be the first to cheer up the robot and make the leaderboard.',
         solvedAt: 'Solved:',
+        endMood: 'End mood',
+        finalMoodLabel: 'Final mood',
         messages: 'messages',
     },
 } as const
