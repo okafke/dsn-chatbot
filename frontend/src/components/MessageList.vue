@@ -60,6 +60,11 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <ChatMessage v-for="(message, index) in messages" :key="`${chatStore.generation}-${index}`" :message="message"/>
+        <ChatMessage
+            v-for="(message, index) in messages"
+            :key="`${chatStore.generation}-${index}`"
+            :message="message"
+            :typewriter-delay-ms="index === 0 && chatStore.fastInitialMessage ? 10 : undefined"
+        />
     </div>
 </template>

@@ -45,6 +45,7 @@ onMounted(async () => {
     gameStore.selectGame(game)
     chatStore.setGameId(gameId)
 
+    chatStore.fastInitialMessage = false
     // Only reset conversation if we don't already have one for this game
     if (!chatStore.conversationId) {
         chatStore.newConversation()
@@ -95,6 +96,8 @@ function handleNewGame() {
     }
     vaultUnlocked.value = false
     chatStore.newConversation()
+    // Use faster typewriter speed for the re-shown initial message
+    chatStore.fastInitialMessage = true
     // Re-show the initial message if the game has one
     if (game?.initial_message) {
         chatStore.addMessage({
