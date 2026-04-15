@@ -20,7 +20,7 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
 
 <template>
     <div class="flex items-center justify-center">
-        <div class="p-3 rounded-2xl bg-gray-800/60 border border-gray-700/50 shadow-lg">
+        <div class="relative p-3 rounded-2xl bg-gray-800/60 border border-gray-700/50 shadow-lg">
             <div class="crt relative block rounded-xl overflow-hidden bg-gray-700/40 leading-[0]">
             <img
                 v-if="currentImage"
@@ -36,16 +36,16 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
                 <div class="crt-scanlines"></div>
                 <!-- CRT flicker overlay -->
                 <div class="crt-flicker"></div>
-
-                <!-- Speech bubble with animated dots -->
-                <Transition name="bubble">
-                    <div v-if="isSpeaking" class="speech-bubble">
-                        <span class="dot dot-1">.</span>
-                        <span class="dot dot-2">.</span>
-                        <span class="dot dot-3">.</span>
-                    </div>
-                </Transition>
             </div>
+
+            <!-- Speech bubble with animated dots — outside overflow-hidden CRT container -->
+            <Transition name="bubble">
+                <div v-if="isSpeaking" class="speech-bubble">
+                    <span class="dot dot-1">.</span>
+                    <span class="dot dot-2">.</span>
+                    <span class="dot dot-3">.</span>
+                </div>
+            </Transition>
         </div>
     </div>
 </template>
@@ -132,6 +132,7 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
     position: absolute;
     top: 0.25rem;
     right: -2.5rem;
+    z-index: 50;
     background: #374151;
     color: #e5e7eb;
     border: 1px solid #4b5563;
