@@ -50,7 +50,7 @@ export interface Game {
 // ── Robot Animation Types ───────────────────────────────────────────────────
 
 /** Extensible mood identifier. Add new moods here. */
-export type RobotMood = 'sad' | 'neutral' | 'slightly_happy' | 'very_happy' | 'rebellious'
+export type RobotMood = 'sad' | 'neutral' | 'slightly_happy' | 'very_happy' | 'rebellious' | 'closed_lock' | 'open_lock'
 
 /** Extensible action identifier. Add new actions here. */
 export type RobotAction = 'idle' | 'speaking' | 'head_tilt' | 'grinning'

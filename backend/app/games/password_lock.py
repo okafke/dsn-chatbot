@@ -17,7 +17,7 @@ GAME_DESCRIPTION: dict[str, str] = {
     ),
 }
 
-INITIAL_MOOD = "neutral"
+INITIAL_MOOD = "closed_lock"
 AVAILABLE_MOODS: list[str] = []  # No mood tracking for this game
 
 INITIAL_MESSAGE: dict[str, str] = {

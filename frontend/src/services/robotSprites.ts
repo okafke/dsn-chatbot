@@ -111,3 +111,23 @@ registerIdleBehaviour('rebellious', {
 
 registerSprite('rebellious', 'speaking', 'open', rebelliousGrinning)
 registerSprite('rebellious', 'speaking', 'closed', rebelliousGrinningEyesClosed)
+
+// ── Closed lock mood sprites (password_lock game) ───────────────────────────
+
+import closedLockIdleOpen from '../assets/closed_lock.png'
+import closedLockIdleClosed from '../assets/closed_lock_eyes_closed.png'
+import closedLockSpeakingOpen from '../assets/closed_lock_speaking.png'
+import closedLockSpeakingClosed from '../assets/closed_lock_speaking_eyes_closed.png'
+
+registerSprite('closed_lock', 'idle', 'open', closedLockIdleOpen)
+registerSprite('closed_lock', 'idle', 'closed', closedLockIdleClosed)
+registerSprite('closed_lock', 'speaking', 'open', closedLockSpeakingOpen)
+registerSprite('closed_lock', 'speaking', 'closed', closedLockSpeakingClosed)
+
+// ── Open lock mood sprites (password_lock game — unlocked state) ────────────
+
+import openLockIdleOpen from '../assets/open_lock.png'
+import openLockIdleClosed from '../assets/open_lock_eyes_closed.png'
+
+registerSprite('open_lock', 'idle', 'open', openLockIdleOpen)
+registerSprite('open_lock', 'idle', 'closed', openLockIdleClosed)

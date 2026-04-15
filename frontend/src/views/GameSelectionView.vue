@@ -21,11 +21,7 @@ const {t} = useI18n()
 const gameMoods: Record<string, RobotMood> = {
   sad_robot: 'sad',
   lazy_robot: 'rebellious',
-}
-
-// Games that use a custom icon instead of the robot preview
-const customIconGames: Record<string, string> = {
-  password_lock: '🔒',
+  password_lock: 'closed_lock',
 }
 
 onMounted(async () => {
@@ -109,12 +105,6 @@ function goToChat() {
                     :mood="gameMoods[game.id]"
                     size="w-24 h-24"
                 />
-                <div
-                    v-else-if="customIconGames[game.id]"
-                    class="w-24 h-24 flex items-center justify-center text-5xl"
-                >
-                  {{ customIconGames[game.id] }}
-                </div>
                 <div
                     v-else
                     class="w-24 h-24 flex items-center justify-center text-3xl"

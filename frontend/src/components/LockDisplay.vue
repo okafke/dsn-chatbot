@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from '../i18n'
+import { useGameStore } from '../stores/game'
+import { resolveSprite } from '../services/robotAnimation'
 import { checkPassword } from '../services/games'
 
 const props = defineProps<{
@@ -13,11 +15,25 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const gameStore = useGameStore()
 const passwordInput = ref('')
 const isChecking = ref(false)
 const isUnlocked = ref(false)
 const shakeError = ref(false)
 const showSuccess = ref(false)
+
+// Sprite resolution via the animation system (same as RobotDisplay)
+const currentImage = computed(() => {
+    const { mood, action, eyes } = gameStore.animationState
+    return resolveSprite(mood, action, eyes)
+})
+
+const altText = computed(() => {
+    const { mood, action } = gameStore.animationState
+    return `Lock ${mood} (${action})`
+})
+
+const isSpeaking = computed(() => gameStore.animationState.action === 'speaking')
 
 async function handleSubmit() {
     const guess = passwordInput.value.trim()
@@ -32,6 +48,8 @@ async function handleSubmit() {
             console.log(`🔓 Password cracked! The password was: ${guess}`)
             isUnlocked.value = true
             showSuccess.value = true
+            // Switch to open_lock mood
+            gameStore.setMood('open_lock')
             emit('unlocked')
         } else {
             // Trigger shake animation
@@ -68,38 +86,40 @@ watch(() => props.gameId, () => {
 
 <template>
     <div class="flex flex-col items-center gap-3">
-        <!-- Lock icon -->
-        <div class="lock-container" :class="{ unlocked: isUnlocked, shake: shakeError }">
-            <div class="lock-wrapper">
-                <!-- Shackle (the U-shaped part) -->
-                <div class="shackle" :class="{ open: isUnlocked }">
-                    <svg viewBox="0 0 60 40" class="w-16 h-10">
-                        <path
-                            d="M 10 40 L 10 15 C 10 6 20 0 30 0 C 40 0 50 6 50 15 L 50 40"
-                            fill="none"
-                            :stroke="isUnlocked ? '#22c55e' : '#9ca3af'"
-                            stroke-width="6"
-                            stroke-linecap="round"
-                        />
-                    </svg>
-                </div>
-                <!-- Lock body -->
-                <div
-                    class="lock-body"
-                    :class="{ 'lock-body-unlocked': isUnlocked }"
-                >
-                    <!-- Keyhole -->
-                    <div class="keyhole" :class="{ 'keyhole-unlocked': isUnlocked }">
-                        <div class="keyhole-circle"></div>
-                        <div class="keyhole-rect"></div>
+        <!-- Lock sprite display (same CRT style as RobotDisplay) -->
+        <div class="flex items-center justify-center" :class="{ shake: shakeError }">
+            <div class="relative p-3 rounded-2xl bg-gray-800/60 border border-gray-700/50 shadow-lg">
+                <div class="crt relative block rounded-xl overflow-hidden bg-gray-700/40 leading-[0]">
+                    <img
+                        v-if="currentImage"
+                        :alt="altText"
+                        :src="currentImage"
+                        class="lock-img w-48 h-48 object-contain transition-opacity duration-75"
+                    />
+                    <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
+                        🔒
                     </div>
-                </div>
-            </div>
 
-            <!-- Success glow -->
-            <Transition name="glow">
-                <div v-if="showSuccess" class="success-glow"></div>
-            </Transition>
+                    <!-- CRT scanlines overlay -->
+                    <div class="crt-scanlines"></div>
+                    <!-- CRT flicker overlay -->
+                    <div class="crt-flicker"></div>
+                </div>
+
+                <!-- Speech bubble with animated dots — outside overflow-hidden CRT container -->
+                <Transition name="bubble">
+                    <div v-if="isSpeaking" class="speech-bubble">
+                        <span class="dot dot-1">.</span>
+                        <span class="dot dot-2">.</span>
+                        <span class="dot dot-3">.</span>
+                    </div>
+                </Transition>
+
+                <!-- Success glow -->
+                <Transition name="glow">
+                    <div v-if="showSuccess" class="success-glow"></div>
+                </Transition>
+            </div>
         </div>
 
         <!-- Password input -->
@@ -133,81 +153,177 @@ watch(() => props.gameId, () => {
 </template>
 
 <style scoped>
-.lock-container {
-    position: relative;
+/* ── CRT Effect ── */
+.crt {
+    box-shadow:
+        inset 0 0 60px rgba(0, 255, 150, 0.08),
+        0 0 14px rgba(0, 255, 150, 0.10);
+}
+
+/* Scanlines */
+.crt-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+    );
+    z-index: 10;
+}
+
+/* Subtle flicker */
+.crt-flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 11;
+    animation: crtFlicker 0.15s infinite;
+    background: transparent;
+}
+
+@keyframes crtFlicker {
+    0%   { opacity: 0.02; background: rgba(200, 255, 200, 0.03); }
+    50%  { opacity: 0;    background: transparent; }
+    100% { opacity: 0.02; background: rgba(200, 255, 200, 0.03); }
+}
+
+/* Vignette / screen edge darkening */
+.crt::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 12;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 60%,
+        rgba(0, 0, 0, 0.35) 100%
+    );
+}
+
+/* Breathing / bobbing animation */
+.lock-img {
+    transform: scale(1.05);
+    animation: lockBreathe 6s ease-in-out infinite;
+}
+
+@keyframes lockBreathe {
+    0% {
+        transform: scale(1.05) translateX(0.5px) translateY(1.5px);
+    }
+    25% {
+        transform: scale(1.05) translateX(-0.5px) translateY(0px);
+    }
+    50% {
+        transform: scale(1.05) translateX(0.5px) translateY(-1.5px);
+    }
+    75% {
+        transform: scale(1.05) translateX(-0.5px) translateY(0px);
+    }
+    100% {
+        transform: scale(1.05) translateX(0.5px) translateY(1.5px);
+    }
+}
+
+.speech-bubble {
+    position: absolute;
+    top: 0.25rem;
+    right: -2.5rem;
+    z-index: 50;
+    background: #374151;
+    color: #e5e7eb;
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    letter-spacing: 0.15em;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 1rem;
+    gap: 1px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.lock-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s ease;
+/* Tail pointing left toward the lock */
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid #4b5563;
 }
 
-.shackle {
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform-origin: right bottom;
-    z-index: 1;
-    margin-bottom: -4px;
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid #374151;
 }
 
-.shackle.open {
-    transform: rotate(-30deg) translateX(-8px) translateY(-4px);
+/* Dot bounce animation */
+.dot {
+    display: inline-block;
+    animation: dotBounce 1.4s ease-in-out infinite;
 }
 
-.lock-body {
-    width: 4.5rem;
-    height: 3.5rem;
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #9ca3af;
-    transition: all 0.5s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.dot-1 {
+    animation-delay: 0s;
 }
 
-.lock-body-unlocked {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border-color: #4ade80;
-    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+.dot-2 {
+    animation-delay: 0.2s;
 }
 
-.keyhole {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease;
+.dot-3 {
+    animation-delay: 0.4s;
 }
 
-.keyhole-circle {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: #1f2937;
-    border: 1px solid #374151;
+@keyframes dotBounce {
+    0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    40% {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
 }
 
-.keyhole-rect {
-    width: 0.35rem;
-    height: 0.5rem;
-    background: #1f2937;
-    border-radius: 0 0 2px 2px;
-    margin-top: -2px;
+/* Bubble enter/leave transition */
+.bubble-enter-active {
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.keyhole-unlocked .keyhole-circle {
-    background: #dcfce7;
-    border-color: #86efac;
+.bubble-leave-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.keyhole-unlocked .keyhole-rect {
-    background: #dcfce7;
+.bubble-enter-from {
+    opacity: 0;
+    transform: scale(0.7);
+}
+
+.bubble-leave-to {
+    opacity: 0;
+    transform: scale(0.7);
 }
 
 .success-glow {
