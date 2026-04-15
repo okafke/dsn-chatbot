@@ -36,7 +36,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div :class="[sizeClass, 'overflow-hidden rounded-lg']" class="robot-preview-container">
+    <div :class="[sizeClass, 'overflow-hidden rounded-lg']" class="robot-preview-container crt relative">
         <img
             v-if="currentImage"
             :alt="altText"
@@ -50,10 +50,68 @@ onUnmounted(() => {
         >
             🎮
         </div>
+
+        <!-- CRT scanlines overlay -->
+        <div class="crt-scanlines"></div>
+        <!-- CRT flicker overlay -->
+        <div class="crt-flicker"></div>
     </div>
 </template>
 
 <style scoped>
+/* ── CRT Effect ── */
+.crt {
+    box-shadow:
+        inset 0 0 60px rgba(0, 255, 150, 0.08),
+        0 0 14px rgba(0, 255, 150, 0.10);
+}
+
+/* Scanlines */
+.crt-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+    );
+    z-index: 10;
+}
+
+/* Subtle flicker */
+.crt-flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 11;
+    animation: crtFlicker 0.15s infinite;
+    background: transparent;
+}
+
+@keyframes crtFlicker {
+    0%   { opacity: 0.02; background: rgba(200, 255, 200, 0.03); }
+    50%  { opacity: 0;    background: transparent; }
+    100% { opacity: 0.02; background: rgba(200, 255, 200, 0.03); }
+}
+
+/* Vignette / screen edge darkening */
+.crt::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 12;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 60%,
+        rgba(0, 0, 0, 0.35) 100%
+    );
+}
+
 .robot-preview-img {
     transform: scale(1.05);
     animation: robotPreviewBreathe 6s ease-in-out infinite;
