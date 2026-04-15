@@ -123,6 +123,13 @@ function handleNewGame() {
             <div class="flex items-center gap-4">
                 <LanguageSwitcher />
                 <button
+                    v-if="isPasswordLockGame"
+                    class="px-3 py-1.5 text-sm bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg transition-colors"
+                    @click="router.push({ name: 'hallOfFame', params: { gameId: gameStore.currentGame!.id } })"
+                >
+                    🏆 {{ t('hallOfFame.button') }}
+                </button>
+                <button
                     class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
                     @click="handleNewGame"
                 >
@@ -145,6 +152,7 @@ function handleNewGame() {
             <LockDisplay
                 v-if="isPasswordLockGame"
                 :game-id="gameStore.currentGame!.id"
+                :conversation-id="chatStore.conversationId"
                 @unlocked="handleVaultUnlocked"
             />
             <RobotDisplay v-else />

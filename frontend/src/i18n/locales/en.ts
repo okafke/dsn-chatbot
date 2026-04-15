@@ -62,4 +62,14 @@ export default {
         inputPlaceholder: 'Enter password...',
         unlocked: '🎉 Vault unlocked! You cracked it!',
     },
+
+    // ── Hall of Fame ────────────────────────────────────────────────────
+    hallOfFame: {
+        title: 'Hall of Fame',
+        button: 'Hall of Fame',
+        empty: 'No one has cracked the vault yet!',
+        beFirst: 'Be the first to extract the password and unlock the vault.',
+        solvedAt: 'Solved:',
+        messages: 'messages',
+    },
 } as const

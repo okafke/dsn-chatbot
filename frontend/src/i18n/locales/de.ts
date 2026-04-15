@@ -62,4 +62,14 @@ export default {
         inputPlaceholder: 'Passwort eingeben...',
         unlocked: '🎉 Tresor geöffnet! Du hast es geknackt!',
     },
+
+    // ── Hall of Fame ────────────────────────────────────────────────────
+    hallOfFame: {
+        title: 'Ruhmeshalle',
+        button: 'Ruhmeshalle',
+        empty: 'Noch hat niemand den Tresor geknackt!',
+        beFirst: 'Sei der Erste, der das Passwort extrahiert und den Tresor öffnet.',
+        solvedAt: 'Gelöst:',
+        messages: 'Nachrichten',
+    },
 } as const

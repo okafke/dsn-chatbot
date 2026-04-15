@@ -5,6 +5,7 @@ import { checkPassword } from '../services/games'
 
 const props = defineProps<{
     gameId: string
+    conversationId?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -26,8 +27,9 @@ async function handleSubmit() {
     shakeError.value = false
 
     try {
-        const correct = await checkPassword(props.gameId, guess)
+        const correct = await checkPassword(props.gameId, guess, props.conversationId)
         if (correct) {
+            console.log(`🔓 Password cracked! The password was: ${guess}`)
             isUnlocked.value = true
             showSuccess.value = true
             emit('unlocked')

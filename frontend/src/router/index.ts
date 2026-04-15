@@ -29,6 +29,12 @@ const router = createRouter({
             meta: {requiresAuth: true},
         },
         {
+            path: '/game/:gameId/hall-of-fame',
+            name: 'hallOfFame',
+            component: () => import('../views/HallOfFameView.vue'),
+            meta: {requiresAuth: true},
+        },
+        {
             path: '/chat',
             name: 'chat',
             component: () => import('../views/ChatView.vue'),

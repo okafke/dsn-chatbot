@@ -34,8 +34,13 @@ export async function fetchGames(language?: string): Promise<Game[]> {
 /**
  * Check if a password guess is correct for a password-lock game.
  */
-export async function checkPassword(gameId: string, password: string): Promise<boolean> {
+export async function checkPassword(gameId: string, password: string, conversationId?: string | null): Promise<boolean> {
     const token = localStorage.getItem('access_token')
+
+    const body: Record<string, string> = { game_id: gameId, password }
+    if (conversationId) {
+        body.conversation_id = conversationId
+    }
 
     const response = await fetch('/api/games/check-password', {
         method: 'POST',
@@ -43,7 +48,7 @@ export async function checkPassword(gameId: string, password: string): Promise<b
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ game_id: gameId, password }),
+        body: JSON.stringify(body),
     })
 
     if (!response.ok) {
@@ -52,4 +57,38 @@ export async function checkPassword(gameId: string, password: string): Promise<b
 
     const data = await response.json()
     return data.correct
+}
+
+export interface SolvedConversation {
+    id: string
+    title: string
+    username: string
+    solved_at: string
+    created_at: string
+    messages: Array<{
+        id: string
+        role: string
+        content: string
+        model?: string
+        created_at: string
+    }>
+}
+
+/**
+ * Fetch the Hall of Fame — all solved conversations for a game.
+ */
+export async function fetchHallOfFame(gameId: string): Promise<SolvedConversation[]> {
+    const token = localStorage.getItem('access_token')
+
+    const response = await fetch(`/api/games/${gameId}/hall-of-fame`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch hall of fame: ${response.statusText}`)
+    }
+
+    return response.json()
 }

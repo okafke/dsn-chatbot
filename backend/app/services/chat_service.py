@@ -46,6 +46,7 @@ async def get_or_create_conversation(
     db: AsyncSession,
     user_id: uuid.UUID,
     conversation_id: uuid.UUID | None = None,
+    game_id: str | None = None,
 ) -> Conversation:
     """Get an existing conversation or create a new one."""
     if conversation_id:
@@ -60,7 +61,7 @@ async def get_or_create_conversation(
             return conversation
 
     # Create new conversation
-    conversation = Conversation(user_id=user_id)
+    conversation = Conversation(user_id=user_id, game_id=game_id)
     db.add(conversation)
     await db.flush()
     await db.refresh(conversation)
@@ -153,7 +154,7 @@ async def stream_chat_response(
 
     try:
         # Get or create conversation
-        conversation = await get_or_create_conversation(db, user_id, conversation_id)
+        conversation = await get_or_create_conversation(db, user_id, conversation_id, game_id)
 
         # Send conversation ID to client
         yield f"data: {json.dumps({'type': 'conversation', 'id': str(conversation.id)})}\n\n"
