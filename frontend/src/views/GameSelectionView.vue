@@ -15,7 +15,7 @@ const chatStore = useChatStore()
 // Map game IDs to the main mood used for the animated robot preview
 const gameMoods: Record<string, RobotMood> = {
   sad_robot: 'sad',
-  lazy_robot: 'slightly_happy',
+  lazy_robot: 'rebellious',
 }
 
 onMounted(async () => {

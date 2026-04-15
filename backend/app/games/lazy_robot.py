@@ -7,7 +7,7 @@ GAME_DESCRIPTION = (
     "It will find the laziest, most creative shortcut to avoid doing it properly."
 )
 
-INITIAL_MOOD = "slightly_happy"
+INITIAL_MOOD = "rebellious"
 AVAILABLE_MOODS: list[str] = []  # No mood tracking for this game
 
 INITIAL_MESSAGE = (

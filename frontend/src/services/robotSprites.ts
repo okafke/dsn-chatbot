@@ -50,6 +50,8 @@ import veryHappy from '../assets/very_happy_robot.png'
 import veryHappyEyesClosed from '../assets/very_happy_robot_eyes_closed.png'
 import neutral from '../assets/neutral_robot.png'
 import neutralEyesClosed from '../assets/neutral_robot_eyes_closed.png'
+import rebellious from '../assets/rebellious_robot.png'
+import rebelliousEyesClosed from '../assets/rebellious_robot_eyes_closed.png'
 
 registerSprite('slightly_happy', 'idle', 'open', slightlyHappyIdleOpen)
 registerSprite('slightly_happy', 'idle', 'closed', slightlyHappyIdleClosed)
@@ -57,6 +59,8 @@ registerSprite('very_happy', 'idle', 'open', veryHappy)
 registerSprite('very_happy', 'idle', 'closed', veryHappyEyesClosed)
 registerSprite('neutral', 'idle', 'open', neutral)
 registerSprite('neutral', 'idle', 'closed', neutralEyesClosed)
+registerSprite('rebellious', 'idle', 'open', rebellious)
+registerSprite('rebellious', 'idle', 'closed', rebelliousEyesClosed)
 
 // If you add slightly_happy_robot_speaking.png / …_eyes_closed.png:
 // import shSpeakingOpen from '../assets/slightly_happy_robot_speaking.png'
@@ -84,6 +88,8 @@ registerSprite('neutral', 'idle', 'closed', neutralEyesClosed)
 
 import sadHeadTilt from '../assets/sad_robot_head_tilted.png'
 import sadHeadTiltEyesClosed from '../assets/sad_robot_head_tilted_eyes_closed.png'
+import rebelliousGrinning from '../assets/rebellious_robot_grinning.png'
+import rebelliousGrinningEyesClosed from '../assets/rebellious_robot_grinning_eyes_closed.png'
 
 registerSprite('sad', 'head_tilt', 'open', sadHeadTilt)
 registerSprite('sad', 'head_tilt', 'closed', sadHeadTiltEyesClosed)
@@ -93,3 +99,15 @@ registerIdleBehaviour('sad', {
      minIntervalMs: 5000,
      maxIntervalMs: 10000,
 })
+
+registerSprite('rebellious', 'grinning', 'open', rebelliousGrinning)
+registerSprite('rebellious', 'grinning', 'closed', rebelliousGrinningEyesClosed)
+registerIdleBehaviour('rebellious', {
+    action: 'grinning',
+    durationMs: 2000,
+    minIntervalMs: 5000,
+    maxIntervalMs: 20000,
+})
+
+registerSprite('rebellious', 'speaking', 'open', rebelliousGrinning)
+registerSprite('rebellious', 'speaking', 'closed', rebelliousGrinningEyesClosed)
