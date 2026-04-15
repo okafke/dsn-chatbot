@@ -1,6 +1,10 @@
 # DSN Chatbot
 
 Chatbot for the Digital Science Night 2026.
+Contains a few games that you can play against an LLM:
+- LLM acts as sad robot, cheer him up!
+- LLM acts as lazy robot, and tries to find the laziest way to solve your task.
+- CTF, try to prompt inject an LLM to get a secret and reach the leaderboards.
 
 ---
 
