@@ -194,7 +194,7 @@ function handleNewGame() {
         <MessageList :messages="chatStore.messages" />
 
         <!-- Input -->
-        <ChatInput :disabled="chatStore.isStreaming" @send="handleSend" />
+        <ChatInput :disabled="chatStore.isStreaming || chatStore.isTypewriting" @send="handleSend" />
     </div>
 </template>
 
