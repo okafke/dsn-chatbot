@@ -26,9 +26,9 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
                 v-if="currentImage"
                 :alt="altText"
                 :src="currentImage"
-                class="robot-img w-48 h-48 object-contain transition-opacity duration-75"
+                class="robot-img w-75 h-75 object-contain transition-opacity duration-75"
             />
-            <div v-else class="w-48 h-48 flex items-center justify-center text-gray-500 text-sm">
+            <div v-else class="w-75 h-75 flex items-center justify-center text-gray-500 text-sm">
                 🤖
             </div>
 

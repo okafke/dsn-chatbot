@@ -75,7 +75,7 @@ function goToChat() {
     </header>
 
     <!-- Content -->
-    <main class="flex-1 flex flex-col items-center justify-center p-8">
+    <main class="flex flex-col items-center justify-center p-8">
       <h2 class="text-3xl font-bold text-white mb-2">{{ t('games.chooseGame') }}</h2>
       <p class="text-gray-400 mb-10">{{ t('games.selectToStart') }}</p>
 
@@ -90,7 +90,7 @@ function goToChat() {
       </div>
 
       <!-- Game cards -->
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl w-full">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-8xl w-full">
         <button
             v-for="game in gameStore.games"
             :key="game.id"
@@ -98,12 +98,12 @@ function goToChat() {
             @click="selectGame(game)"
         >
           <div class="flex justify-center mb-4">
-            <div class="p-2 rounded-2xl bg-gray-700/40 border border-gray-600/40 shadow-md">
-              <div class="rounded-xl overflow-hidden bg-gray-600/30 leading-[0] group-hover:scale-110 transition-transform duration-200">
+            <div class="p-2 rounded-2xl bg-gray-700/40 border group-hover:scale-110 transition-transform duration-200 border-gray-600/40 shadow-md">
+              <div class="rounded-xl overflow-hidden bg-gray-600/30 leading-[0]">
                 <AnimatedRobotPreview
                     v-if="gameMoods[game.id]"
                     :mood="gameMoods[game.id]"
-                    size="w-24 h-24"
+                    size="w-56 h-56"
                 />
                 <div
                     v-else
