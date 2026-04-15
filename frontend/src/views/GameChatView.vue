@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import { useChatStore } from '../stores/chat'
@@ -9,6 +9,7 @@ import type { RobotMood } from '../types'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
 import RobotDisplay from '../components/RobotDisplay.vue'
+import LockDisplay from '../components/LockDisplay.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const route = useRoute()
@@ -17,6 +18,13 @@ const gameStore = useGameStore()
 const chatStore = useChatStore()
 const languageStore = useLanguageStore()
 const { t } = useI18n()
+
+const vaultUnlocked = ref(false)
+const isPasswordLockGame = computed(() => gameStore.currentGame?.id === 'password_lock')
+
+function handleVaultUnlocked() {
+    vaultUnlocked.value = true
+}
 
 onMounted(async () => {
     const gameId = route.params.gameId as string
@@ -84,6 +92,7 @@ function handleNewGame() {
     if (game) {
         gameStore.setMood(game.initial_mood as RobotMood)
     }
+    vaultUnlocked.value = false
     chatStore.newConversation()
     // Re-show the initial message if the game has one
     if (game?.initial_message) {
@@ -131,9 +140,14 @@ function handleNewGame() {
             <button class="text-red-400 hover:text-red-200 ml-4" @click="chatStore.error = null">✕</button>
         </div>
 
-        <!-- Robot display -->
+        <!-- Display: Lock for password_lock game, Robot for others -->
         <div class="py-4 shrink-0">
-            <RobotDisplay />
+            <LockDisplay
+                v-if="isPasswordLockGame"
+                :game-id="gameStore.currentGame!.id"
+                @unlocked="handleVaultUnlocked"
+            />
+            <RobotDisplay v-else />
         </div>
 
         <!-- Messages -->

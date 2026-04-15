@@ -30,3 +30,26 @@ export async function fetchGames(language?: string): Promise<Game[]> {
 
     return response.json()
 }
+
+/**
+ * Check if a password guess is correct for a password-lock game.
+ */
+export async function checkPassword(gameId: string, password: string): Promise<boolean> {
+    const token = localStorage.getItem('access_token')
+
+    const response = await fetch('/api/games/check-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ game_id: gameId, password }),
+    })
+
+    if (!response.ok) {
+        throw new Error(`Failed to check password: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return data.correct
+}

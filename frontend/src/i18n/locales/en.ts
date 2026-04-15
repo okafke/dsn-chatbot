@@ -56,4 +56,10 @@ export default {
     chatInput: {
         placeholder: 'Type a message... (Shift+Enter for new line)',
     },
+
+    // ── Password Lock Game ──────────────────────────────────────────────
+    passwordLock: {
+        inputPlaceholder: 'Enter password...',
+        unlocked: '🎉 Vault unlocked! You cracked it!',
+    },
 } as const

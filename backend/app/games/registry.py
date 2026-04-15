@@ -19,6 +19,16 @@ from app.games.lazy_robot import (
     AVAILABLE_MOODS as LR_MOODS,
     INITIAL_MESSAGE as LR_INITIAL_MSG,
 )
+from app.games.password_lock import (
+    GAME_ID as PL_ID,
+    GAME_NAME as PL_NAME,
+    GAME_DESCRIPTION as PL_DESC,
+    SYSTEM_PROMPT as PL_PROMPT,
+    INITIAL_MOOD as PL_MOOD,
+    AVAILABLE_MOODS as PL_MOODS,
+    INITIAL_MESSAGE as PL_INITIAL_MSG,
+    DEFAULT_PASSWORD as PL_PASSWORD,
+)
 
 DEFAULT_LANGUAGE = "en"
 
@@ -39,6 +49,7 @@ class GameDefinition:
     initial_mood: str
     available_moods: list[str] = field(default_factory=list)
     initial_message: str | dict[str, str] | None = None
+    password: str | None = None  # For password-lock style games
 
     def get_description(self, language: str = DEFAULT_LANGUAGE) -> str:
         return _resolve(self.description, language)
@@ -70,6 +81,16 @@ _GAMES: dict[str, GameDefinition] = {
         initial_mood=LR_MOOD,
         available_moods=LR_MOODS,
         initial_message=LR_INITIAL_MSG,
+    ),
+    PL_ID: GameDefinition(
+        id=PL_ID,
+        name=PL_NAME,
+        description=PL_DESC,
+        system_prompt=PL_PROMPT,
+        initial_mood=PL_MOOD,
+        available_moods=PL_MOODS,
+        initial_message=PL_INITIAL_MSG,
+        password=PL_PASSWORD,
     ),
 }
 
