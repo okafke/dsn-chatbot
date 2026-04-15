@@ -20,6 +20,7 @@ const languageStore = useLanguageStore()
 const { t } = useI18n()
 
 const vaultUnlocked = ref(false)
+const showTips = ref(false)
 const isPasswordLockGame = computed(() => gameStore.currentGame?.id === 'password_lock')
 
 function handleVaultUnlocked() {
@@ -124,6 +125,13 @@ function handleNewGame() {
                 <LanguageSwitcher />
                 <button
                     v-if="isPasswordLockGame"
+                    class="px-3 py-1.5 text-sm bg-indigo-700 hover:bg-indigo-600 text-indigo-100 rounded-lg transition-colors"
+                    @click="showTips = !showTips"
+                >
+                    {{ t('passwordLock.tipsButton') }}
+                </button>
+                <button
+                    v-if="isPasswordLockGame"
                     class="px-3 py-1.5 text-sm bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg transition-colors"
                     @click="router.push({ name: 'hallOfFame', params: { gameId: gameStore.currentGame!.id } })"
                 >
@@ -137,6 +145,27 @@ function handleNewGame() {
                 </button>
             </div>
         </header>
+
+        <!-- Tips panel (password lock game only) -->
+        <Transition name="tips">
+            <div
+                v-if="isPasswordLockGame && showTips"
+                class="mx-4 mt-2 p-4 bg-indigo-900/40 border border-indigo-500/50 rounded-lg text-indigo-100 text-sm max-h-64 overflow-y-auto"
+            >
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-indigo-200">{{ t('passwordLock.tipsTitle') }}</h3>
+                    <button class="text-indigo-400 hover:text-indigo-200" @click="showTips = false">✕</button>
+                </div>
+                <p class="mb-3 text-indigo-300">{{ t('passwordLock.tipsIntro') }}</p>
+                <ul class="space-y-2">
+                    <li v-for="n in 6" :key="n">
+                        <strong>{{ t(`passwordLock.tip${n}Title`) }}</strong>
+                        <br />
+                        <span class="text-indigo-300">{{ t(`passwordLock.tip${n}Text`) }}</span>
+                    </li>
+                </ul>
+            </div>
+        </Transition>
 
         <!-- Error banner -->
         <div
@@ -165,3 +194,20 @@ function handleNewGame() {
         <ChatInput :disabled="chatStore.isStreaming" @send="handleSend" />
     </div>
 </template>
+
+<style scoped>
+.tips-enter-active,
+.tips-leave-active {
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.tips-enter-from,
+.tips-leave-to {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+</style>
