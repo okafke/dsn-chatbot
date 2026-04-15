@@ -54,19 +54,19 @@ const isSpeaking = computed(() => gameStore.animationState.action === 'speaking'
 
 @keyframes robotBreathe {
     0% {
-        transform: scale(1.05) translateX(0.5px) translateY(1px);
+        transform: scale(1.05) translateX(0.5px) translateY(1.5px);
     }
     25% {
         transform: scale(1.05) translateX(-0.5px) translateY(0px);
     }
     50% {
-        transform: scale(1.05) translateX(0.5px) translateY(-1px);
+        transform: scale(1.05) translateX(0.5px) translateY(-1.5px);
     }
     75% {
         transform: scale(1.05) translateX(-0.5px) translateY(0px);
     }
     100% {
-        transform: scale(1.05) translateX(0.5px) translateY(1px);
+        transform: scale(1.05) translateX(0.5px) translateY(1.5px);
     }
 }
 
