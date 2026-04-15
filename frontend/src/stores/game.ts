@@ -71,6 +71,7 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function resetGame() {
+        getAnimation().stopSpeaking()
         getAnimation().stop()
         currentGame.value = null
     }

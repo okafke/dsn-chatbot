@@ -2,10 +2,13 @@
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { ChatMessage as ChatMessageType } from '../types'
 import ChatMessage from './ChatMessage.vue'
+import { useChatStore } from '../stores/chat'
 
 const props = defineProps<{
     messages: ChatMessageType[]
 }>()
+
+const chatStore = useChatStore()
 
 const container = ref<HTMLElement | null>(null)
 let resizeObserver: ResizeObserver | null = null
@@ -57,6 +60,6 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <ChatMessage v-for="(message, index) in messages" :key="index" :message="message"/>
+        <ChatMessage v-for="(message, index) in messages" :key="`${chatStore.generation}-${index}`" :message="message"/>
     </div>
 </template>

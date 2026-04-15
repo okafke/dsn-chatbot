@@ -80,6 +80,7 @@ function handleBack() {
 
 function handleNewGame() {
     const game = gameStore.currentGame
+    gameStore.stopSpeaking()
     if (game) {
         gameStore.setMood(game.initial_mood as RobotMood)
     }

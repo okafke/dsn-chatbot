@@ -12,6 +12,8 @@ export const useChatStore = defineStore('chat', () => {
     const isTypewriting = ref(false)
     const error = ref<string | null>(null)
     const gameId = ref<string | null>(null)
+    /** Incremented on every newConversation() to force component re-creation. */
+    const generation = ref(0)
 
     function setGameId(id: string | null) {
         gameId.value = id
@@ -109,6 +111,9 @@ export const useChatStore = defineStore('chat', () => {
         messages.value = []
         conversationId.value = null
         error.value = null
+        isStreaming.value = false
+        isTypewriting.value = false
+        generation.value++
     }
 
     return {
@@ -118,6 +123,7 @@ export const useChatStore = defineStore('chat', () => {
         isTypewriting,
         error,
         gameId,
+        generation,
         setGameId,
         setTypewriting,
         addMessage,
