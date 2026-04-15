@@ -24,7 +24,7 @@ watch(isTyping, (typing) => {
     if (isAssistant.value) {
         chatStore.setTypewriting(typing)
     }
-})
+}, { immediate: true })
 
 // Show the typewriter text for assistant messages, raw content for user messages
 const visibleContent = computed(() =>
