@@ -8,7 +8,8 @@ export async function sendMessageStream(
     message: string,
     conversationId: string | null,
     onEvent: (event: SSEEvent) => void,
-    gameId?: string | null
+    gameId?: string | null,
+    language?: string | null,
 ): Promise<void> {
     const token = localStorage.getItem('access_token')
 
@@ -18,6 +19,9 @@ export async function sendMessageStream(
     }
     if (gameId) {
         body.game_id = gameId
+    }
+    if (language) {
+        body.language = language
     }
 
     const response = await fetch('/api/chat', {

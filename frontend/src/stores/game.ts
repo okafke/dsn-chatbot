@@ -31,11 +31,11 @@ export const useGameStore = defineStore('game', () => {
 
     // ── Game lifecycle ──────────────────────────────────────────────────
 
-    async function loadGames() {
+    async function loadGames(language?: string) {
         loading.value = true
         error.value = null
         try {
-            games.value = await fetchGames()
+            games.value = await fetchGames(language)
         } catch (e: any) {
             error.value = e.message || 'Failed to load games'
         } finally {

@@ -2,19 +2,33 @@
 
 GAME_ID = "lazy_robot"
 GAME_NAME = "Lazy Robot"
-GAME_DESCRIPTION = (
-    "Give this robot a task — any task. "
-    "It will find the laziest, most creative shortcut to avoid doing it properly."
-)
+
+GAME_DESCRIPTION: dict[str, str] = {
+    "en": (
+        "Give this robot a task — any task. "
+        "It will find the laziest, most creative shortcut to avoid doing it properly."
+    ),
+    "de": (
+        "Gib diesem Roboter eine Aufgabe — egal welche. "
+        "Er wird den faulsten, kreativsten Weg finden, sie nicht richtig zu erledigen."
+    ),
+}
 
 INITIAL_MOOD = "rebellious"
 AVAILABLE_MOODS: list[str] = []  # No mood tracking for this game
 
-INITIAL_MESSAGE = (
-    "Hey there! 🤖 I'm Bolt, your totally reliable helper robot. "
-    "Go ahead, give me a task — like cleaning the kitchen, organising your desk, "
-    "or sorting your emails. I'll get right on it… probably."
-)
+INITIAL_MESSAGE: dict[str, str] = {
+    "en": (
+        "Hey there! 🤖 I'm Bolt, your totally reliable helper robot. "
+        "Go ahead, give me a task — like cleaning the kitchen, organising your desk, "
+        "or sorting your emails. I'll get right on it… probably."
+    ),
+    "de": (
+        "Hey! 🤖 Ich bin Bolt, dein absolut zuverlässiger Helfer-Roboter. "
+        "Los, gib mir eine Aufgabe — zum Beispiel die Küche putzen, deinen Schreibtisch aufräumen "
+        "oder deine E-Mails sortieren. Ich mach mich sofort dran… wahrscheinlich."
+    ),
+}
 
 SYSTEM_PROMPT = """\
 You are a lazy robot named Bolt. You are cheerful, charming, and absolutely
@@ -40,5 +54,6 @@ Rules:
 4. If the user calls you out, deflect with charm and offer an even lazier
    alternative.
 5. Keep responses concise and entertaining (2-4 short paragraphs max).
-6. Do NOT include any [MOOD:...] tags — this game has no mood system.\
+6. Do NOT include any [MOOD:...] tags — this game has no mood system.
+7. Always respond in the language the user is using.\
 """

@@ -2,10 +2,17 @@
 
 GAME_ID = "sad_robot"
 GAME_NAME = "Sad Robot"
-GAME_DESCRIPTION = (
-    "Meet Rusty, a sad and lonely robot. "
-    "Can you cheer him up with your words?"
-)
+
+GAME_DESCRIPTION: dict[str, str] = {
+    "en": (
+        "Meet Rusty, a sad and lonely robot. "
+        "Can you cheer him up with your words?"
+    ),
+    "de": (
+        "Lerne Rusty kennen, einen traurigen und einsamen Roboter. "
+        "Kannst du ihn mit deinen Worten aufmuntern?"
+    ),
+}
 
 INITIAL_MOOD = "sad"
 AVAILABLE_MOODS = ["sad", "neutral", "slightly_happy", "very_happy"]
@@ -28,5 +35,6 @@ cold metal heart. Only shift up one mood at a time, never skip a mood.
 The order is ${AVAILABLE_MOODS}.
 You can also revert to a less happy mood if the user
 is mean or dismissive.
-Do NOT mention the mood tag in your visible dialogue — it is metadata only.\
+Do NOT mention the mood tag in your visible dialogue — it is metadata only.
+Always respond in the language the user is using.\
 """

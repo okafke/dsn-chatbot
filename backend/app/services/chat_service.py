@@ -129,6 +129,7 @@ async def stream_chat_response(
     conversation_id: uuid.UUID | None = None,
     model: str | None = None,
     game_id: str | None = None,
+    language: str | None = None,
 ) -> AsyncGenerator[str, None]:
     """
     Process a chat message and stream the response as SSE events.
@@ -145,6 +146,10 @@ async def stream_chat_response(
     # Resolve game-specific settings
     game = get_game(game_id) if game_id else None
     system_prompt = game.system_prompt if game else SYSTEM_PROMPT
+
+    # Append the current UI language so the LLM responds accordingly
+    if language:
+        system_prompt += f"\nCurrent language is: {language}"
 
     try:
         # Get or create conversation

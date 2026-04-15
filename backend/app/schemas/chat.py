@@ -9,6 +9,7 @@ class ChatRequest(BaseModel):
     conversation_id: uuid.UUID | None = None
     model: str | None = None  # Override default model
     game_id: str | None = None  # Identifies which game is being played
+    language: str | None = None  # Frontend UI language (e.g. "en", "de")
 
 
 class MessageResponse(BaseModel):

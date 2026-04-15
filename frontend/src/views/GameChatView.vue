@@ -3,22 +3,27 @@ import { onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
 import { useChatStore } from '../stores/chat'
+import { useLanguageStore } from '../stores/language'
+import { useI18n } from '../i18n'
 import type { RobotMood } from '../types'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
 import RobotDisplay from '../components/RobotDisplay.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const route = useRoute()
 const router = useRouter()
 const gameStore = useGameStore()
 const chatStore = useChatStore()
+const languageStore = useLanguageStore()
+const { t } = useI18n()
 
 onMounted(async () => {
     const gameId = route.params.gameId as string
 
     // If we don't have games loaded yet, load them
     if (gameStore.games.length === 0) {
-        await gameStore.loadGames()
+        await gameStore.loadGames(languageStore.locale)
     }
 
     // Find and select the game (this also starts the animation controller)
@@ -98,19 +103,20 @@ function handleNewGame() {
                     class="text-gray-400 hover:text-white transition-colors"
                     @click="handleBack"
                 >
-                    ← Back
+                    {{ t('common.back') }}
                 </button>
                 <h1 class="text-lg font-semibold text-white">
-                    {{ gameStore.currentGame?.name || 'Game' }}
+                    {{ gameStore.currentGame?.name || t('gameChat.defaultTitle') }}
                 </h1>
             </div>
 
             <div class="flex items-center gap-4">
+                <LanguageSwitcher />
                 <button
                     class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
                     @click="handleNewGame"
                 >
-                    🔄 Restart
+                    {{ t('gameChat.restart') }}
                 </button>
             </div>
         </header>

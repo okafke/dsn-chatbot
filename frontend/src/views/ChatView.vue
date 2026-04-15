@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import {useChatStore} from '../stores/chat'
+import {useI18n} from '../i18n'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const chatStore = useChatStore()
+const {t} = useI18n()
 
 function handleSend(message: string) {
   chatStore.sendMessage(message)
@@ -20,15 +23,16 @@ function handleNewChat() {
     <!-- Header -->
     <header class="flex items-center justify-between px-6 py-3 bg-gray-800 border-b border-gray-700 shrink-0">
       <div class="flex items-center gap-3">
-        <h1 class="text-lg font-semibold text-white">DSN Chatbot</h1>
+        <h1 class="text-lg font-semibold text-white">{{ t('chat.title') }}</h1>
       </div>
 
       <div class="flex items-center gap-4">
+        <LanguageSwitcher />
         <button
             class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
             @click="handleNewChat"
         >
-          + New Chat
+          {{ t('chat.newChat') }}
         </button>
       </div>
     </header>

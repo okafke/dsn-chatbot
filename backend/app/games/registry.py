@@ -20,16 +20,33 @@ from app.games.lazy_robot import (
     INITIAL_MESSAGE as LR_INITIAL_MSG,
 )
 
+DEFAULT_LANGUAGE = "en"
+
+
+def _resolve(value: str | dict[str, str], language: str = DEFAULT_LANGUAGE) -> str:
+    """Resolve a translatable value to a string for the given language."""
+    if isinstance(value, str):
+        return value
+    return value.get(language, value.get(DEFAULT_LANGUAGE, next(iter(value.values()))))
+
 
 @dataclass
 class GameDefinition:
     id: str
     name: str
-    description: str
+    description: str | dict[str, str]
     system_prompt: str
     initial_mood: str
     available_moods: list[str] = field(default_factory=list)
-    initial_message: str | None = None
+    initial_message: str | dict[str, str] | None = None
+
+    def get_description(self, language: str = DEFAULT_LANGUAGE) -> str:
+        return _resolve(self.description, language)
+
+    def get_initial_message(self, language: str = DEFAULT_LANGUAGE) -> str | None:
+        if self.initial_message is None:
+            return None
+        return _resolve(self.initial_message, language)
 
 
 # ---------------------------------------------------------------------------

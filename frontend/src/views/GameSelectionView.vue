@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import {onMounted} from 'vue'
+import {onMounted, watch} from 'vue'
 import {useRouter} from 'vue-router'
 import {useGameStore} from '../stores/game'
 import {useAuthStore} from '../stores/auth'
 import {useChatStore} from '../stores/chat'
+import {useLanguageStore} from '../stores/language'
+import {useI18n} from '../i18n'
 import AnimatedRobotPreview from '../components/AnimatedRobotPreview.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import type {RobotMood} from '../types'
 
 const router = useRouter()
 const gameStore = useGameStore()
 const authStore = useAuthStore()
 const chatStore = useChatStore()
+const languageStore = useLanguageStore()
+const {t} = useI18n()
 
 // Map game IDs to the main mood used for the animated robot preview
 const gameMoods: Record<string, RobotMood> = {
@@ -19,7 +24,12 @@ const gameMoods: Record<string, RobotMood> = {
 }
 
 onMounted(async () => {
-  await gameStore.loadGames()
+  await gameStore.loadGames(languageStore.locale)
+})
+
+// Reload games when language changes so descriptions update
+watch(() => languageStore.locale, async (newLocale) => {
+  await gameStore.loadGames(newLocale)
 })
 
 function selectGame(game: typeof gameStore.games[number]) {
@@ -45,31 +55,32 @@ function goToChat() {
   <div class="min-h-screen bg-gray-900 flex flex-col">
     <!-- Header -->
     <header class="flex items-center justify-between px-6 py-3 bg-gray-800 border-b border-gray-700 shrink-0">
-      <h1 class="text-lg font-semibold text-white">DSN Chatbot — Games</h1>
+      <h1 class="text-lg font-semibold text-white">{{ t('games.headerTitle') }}</h1>
       <div class="flex items-center gap-4">
+        <LanguageSwitcher />
         <button
             class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
             @click="goToChat"
         >
-          💬 Free Chat
+          {{ t('games.freeChat') }}
         </button>
         <button
             class="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors"
             @click="handleLogout"
         >
-          Logout
+          {{ t('common.logout') }}
         </button>
       </div>
     </header>
 
     <!-- Content -->
     <main class="flex-1 flex flex-col items-center justify-center p-8">
-      <h2 class="text-3xl font-bold text-white mb-2">Choose a Game</h2>
-      <p class="text-gray-400 mb-10">Select a game to start playing</p>
+      <h2 class="text-3xl font-bold text-white mb-2">{{ t('games.chooseGame') }}</h2>
+      <p class="text-gray-400 mb-10">{{ t('games.selectToStart') }}</p>
 
       <!-- Loading -->
       <div v-if="gameStore.loading" class="text-gray-400">
-        Loading games...
+        {{ t('games.loadingGames') }}
       </div>
 
       <!-- Error -->

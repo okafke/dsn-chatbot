@@ -2,11 +2,19 @@ import type {Game} from '../types'
 
 /**
  * Fetch the list of available games from the backend.
+ * Optionally pass a language code to get translated descriptions.
  */
-export async function fetchGames(): Promise<Game[]> {
+export async function fetchGames(language?: string): Promise<Game[]> {
     const token = localStorage.getItem('access_token')
 
-    const response = await fetch('/api/games', {
+    const params = new URLSearchParams()
+    if (language) {
+        params.set('language', language)
+    }
+    const qs = params.toString()
+    const url = `/api/games${qs ? `?${qs}` : ''}`
+
+    const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
