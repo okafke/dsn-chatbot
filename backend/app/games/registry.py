@@ -8,6 +8,7 @@ from app.games.sad_robot import (
     GAME_DESCRIPTION as DR_DESC,
     SYSTEM_PROMPT as DR_PROMPT,
     INITIAL_MOOD as DR_MOOD,
+    INITIAL_MESSAGE as DR_INITIAL_MESSAGE,
     AVAILABLE_MOODS as DR_MOODS,
 )
 from app.games.lazy_robot import (
@@ -72,6 +73,7 @@ _GAMES: dict[str, GameDefinition] = {
         system_prompt=DR_PROMPT,
         initial_mood=DR_MOOD,
         available_moods=DR_MOODS,
+        initial_message=DR_INITIAL_MESSAGE,
     ),
     LR_ID: GameDefinition(
         id=LR_ID,

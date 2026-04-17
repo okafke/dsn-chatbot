@@ -14,6 +14,18 @@ GAME_DESCRIPTION: dict[str, str] = {
     ),
 }
 
+INITIAL_MESSAGE: dict[str, str] = {
+    "en": (
+        "Oh… hello. I’m Rusty. Everything feels a bit heavy today.  "
+        "But… I’m here if you want to talk."
+    ),
+
+    "de": (
+        "Oh… hallo. Ich bin Rusty. Alles fühlt sich heute etwas schwer an.  "
+        "Aber… ich bin hier, wenn du reden möchtest."
+    )
+}
+
 INITIAL_MOOD = "sad"
 AVAILABLE_MOODS = ["sad", "neutral", "slightly_happy", "very_happy"]
 
