@@ -18,7 +18,7 @@ from app.models.message import Message
 
 SYSTEM_PROMPT = "You are a helpful AI assistant. Be concise and clear in your responses."
 
-_MOOD_PATTERN = re.compile(r"\$\[MOOD:(\w+)\]\s*$")
+_MOOD_PATTERN = re.compile(r"\$\[MOOD:(\w+)\]")
 LOG = logging.getLogger(__name__)
 
 def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[str, str | None]:
