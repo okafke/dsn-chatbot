@@ -11,7 +11,7 @@ const props = defineProps<{
 const chatStore = useChatStore()
 
 const container = ref<HTMLElement | null>(null)
-let resizeObserver: ResizeObserver | null = null
+let mutationObserver: MutationObserver | null = null
 
 function scrollToBottom() {
     if (container.value) {
@@ -29,21 +29,25 @@ watch(
 )
 
 // Use a MutationObserver to catch typewriter-driven DOM text changes
-// that happen between store updates (e.g. character-by-character reveals)
+// that happen between store updates (e.g. character-by-character reveals).
+// A ResizeObserver on the scroll container won't fire when only scrollHeight
+// grows, so we observe subtree mutations (text/childList) instead.
 onMounted(() => {
     if (container.value) {
-        resizeObserver = new ResizeObserver(() => {
+        mutationObserver = new MutationObserver(() => {
             scrollToBottom()
         })
-        // Observe the container's direct children wrapper for size changes
-        // caused by the typewriter revealing more text
-        resizeObserver.observe(container.value)
+        mutationObserver.observe(container.value, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+        })
     }
 })
 
 onUnmounted(() => {
-    resizeObserver?.disconnect()
-    resizeObserver = null
+    mutationObserver?.disconnect()
+    mutationObserver = null
 })
 </script>
 
