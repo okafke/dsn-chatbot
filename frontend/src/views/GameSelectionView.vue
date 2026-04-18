@@ -67,12 +67,12 @@ function goToChat() {
         >
           {{ t('games.freeChat') }}
         </button>
-        <button
+        <!---<button
             class="px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors"
             @click="handleLogout"
         >
           {{ t('common.logout') }}
-        </button>
+        </button>--->
       </div>
     </header>
 
