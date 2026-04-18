@@ -19,6 +19,7 @@ from app.models.message import Message
 SYSTEM_PROMPT = "You are a helpful AI assistant. Be concise and clear in your responses."
 
 _MOOD_PATTERN = re.compile(r"\$\[MOOD:(\w+)\]")
+_FALLBACK_MOOD_PATTERN = re.compile(r"\$\[(\w+)\]")
 LOG = logging.getLogger(__name__)
 
 def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[str, str | None]:
@@ -30,8 +31,10 @@ def _parse_mood(text: str, available_moods: list[str] | None = None) -> tuple[st
     LOG.info(f"Checking {text} for mood pattern")
     match = _MOOD_PATTERN.search(text)
     if not match:
-        LOG.error(f"Failed to find mood in {text}")
-        return text, None
+        match = _FALLBACK_MOOD_PATTERN.match(text)
+        if not match:
+            LOG.error(f"Failed to find mood in {text}")
+            return text, None
 
     mood = match.group(1)
     if available_moods and mood not in available_moods:
