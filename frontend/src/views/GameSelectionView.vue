@@ -2,7 +2,7 @@
 import {onMounted, watch} from 'vue'
 import {useRouter} from 'vue-router'
 import {useGameStore} from '../stores/game'
-import {useAuthStore} from '../stores/auth'
+//import {useAuthStore} from '../stores/auth'
 import {useChatStore} from '../stores/chat'
 import {useLanguageStore} from '../stores/language'
 import {useI18n} from '../i18n'
@@ -13,7 +13,7 @@ import type {RobotMood} from '../types'
 
 const router = useRouter()
 const gameStore = useGameStore()
-const authStore = useAuthStore()
+//const authStore = useAuthStore()
 const chatStore = useChatStore()
 const languageStore = useLanguageStore()
 const {t} = useI18n()
@@ -41,10 +41,10 @@ function selectGame(game: typeof gameStore.games[number]) {
   router.push({name: 'game', params: {gameId: game.id}})
 }
 
-function handleLogout() {
+/*function handleLogout() {
   authStore.logout()
   router.push('/login')
-}
+}*/
 
 function goToChat() {
   chatStore.setGameId(null)
