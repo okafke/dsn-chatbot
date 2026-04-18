@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     llm_provider: str = "openai"
     openai_api_key: str = ""
     openai_model: str = "gpt-4o"
+    available_models: str = ""  # Comma-separated list of models available for selection
+
+    @property
+    def available_models_list(self) -> list[str]:
+        """Return list of available models. Falls back to the default model if empty."""
+        if self.available_models.strip():
+            return [m.strip() for m in self.available_models.split(",") if m.strip()]
+        return [self.openai_model]
 
     # CORS
     cors_origins: str = "http://localhost:5173,http://localhost:3000"

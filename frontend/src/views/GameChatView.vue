@@ -11,6 +11,7 @@ import ChatInput from '../components/ChatInput.vue'
 import RobotDisplay from '../components/RobotDisplay.vue'
 import LockDisplay from '../components/LockDisplay.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ModelSelector from '../components/ModelSelector.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -127,6 +128,7 @@ function handleNewGame() {
             </div>
 
             <div class="flex items-center gap-4">
+                <ModelSelector />
                 <LanguageSwitcher />
                 <button
                     v-if="isPasswordLockGame"

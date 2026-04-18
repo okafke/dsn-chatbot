@@ -4,6 +4,7 @@ import type {ChatMessage, RobotMood} from '../types'
 import {sendMessageStream} from '../services/chat'
 import {useGameStore} from './game'
 import {useLanguageStore} from './language'
+import {useModelStore} from './model'
 
 export const useChatStore = defineStore('chat', () => {
     const messages = ref<ChatMessage[]>([])
@@ -80,6 +81,7 @@ export const useChatStore = defineStore('chat', () => {
         try {
             const gameStore = useGameStore()
             const languageStore = useLanguageStore()
+            const modelStore = useModelStore()
 
             await sendMessageStream(content, conversationId.value, (event) => {
                 switch (event.type) {
@@ -105,7 +107,7 @@ export const useChatStore = defineStore('chat', () => {
                         finishStreaming()
                         break
                 }
-            }, gameId.value, languageStore.locale)
+            }, gameId.value, languageStore.locale, modelStore.currentModel)
         } catch (e: any) {
             error.value = e.message || 'Failed to send message'
             finishStreaming()

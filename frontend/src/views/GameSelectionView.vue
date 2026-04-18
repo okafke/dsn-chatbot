@@ -8,6 +8,7 @@ import {useLanguageStore} from '../stores/language'
 import {useI18n} from '../i18n'
 import AnimatedRobotPreview from '../components/AnimatedRobotPreview.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ModelSelector from '../components/ModelSelector.vue'
 import type {RobotMood} from '../types'
 
 const router = useRouter()
@@ -58,6 +59,7 @@ function goToChat() {
     <header class="flex items-center justify-between px-6 py-3 bg-gray-800 border-b border-gray-700 shrink-0">
       <h1 class="text-lg font-semibold text-white">{{ t('games.headerTitle') }}</h1>
       <div class="flex items-center gap-4">
+        <ModelSelector />
         <LanguageSwitcher />
         <button
             class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"

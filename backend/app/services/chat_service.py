@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.config import settings
 from app.games.registry import get_game
 from app.llm.base import LLMMessage
 from app.llm.factory import get_llm_provider
@@ -143,6 +144,13 @@ async def stream_chat_response(
     - data: {"type": "error", "message": "..."}\n\n     (on error)
     """
     provider = get_llm_provider()
+
+    # Validate model against allowed list
+    if model:
+        allowed_models = settings.available_models_list
+        if model not in allowed_models:
+            yield f"data: {json.dumps({'type': 'error', 'message': f'Model {model} is not available. Allowed: {allowed_models}'})}\n\n"
+            return
 
     # Resolve game-specific settings
     game = get_game(game_id) if game_id else None

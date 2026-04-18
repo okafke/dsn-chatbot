@@ -4,6 +4,7 @@ import {useI18n} from '../i18n'
 import MessageList from '../components/MessageList.vue'
 import ChatInput from '../components/ChatInput.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ModelSelector from '../components/ModelSelector.vue'
 
 const chatStore = useChatStore()
 const {t} = useI18n()
@@ -27,6 +28,7 @@ function handleNewChat() {
       </div>
 
       <div class="flex items-center gap-4">
+        <ModelSelector />
         <LanguageSwitcher />
         <button
             class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"

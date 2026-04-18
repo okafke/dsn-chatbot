@@ -16,6 +16,7 @@ LOG = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     LOG.info(f"{settings.app_name} - {settings.app_version} - {settings.app_env}")
+    LOG.info(f"Available models: {settings.available_models_list}")
     # Create tables on startup (use Alembic in production)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -48,3 +49,13 @@ app.include_router(games.router)
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok", "app": settings.app_name, "version": settings.app_version}
+
+
+@app.get("/api/models")
+async def list_models():
+    """Return the list of available LLM models and the default model."""
+    models = settings.available_models_list
+    return {
+        "models": models,
+        "default": models[0] if models else settings.openai_model,
+    }
